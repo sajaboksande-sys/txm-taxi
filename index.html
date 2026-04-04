@@ -245,7 +245,32 @@
         await fetch(`${API}/locations`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name:adLoc.value, type:uType.value, price:adPr.value}) });
         alert("تمت إضافة الوجهة");
     }
+// تحديث قائمة السائقين للراكب (تظهر اسم السائق + نوع السيارة)
+async function loadDriversForUser() {
+    const r = await fetch(`${API}/drivers/active`);
+    const drivers = await r.json();
+    const list = document.getElementById('driver-list'); // تأكد من الـ ID في HTML
+    list.innerHTML = drivers.map(d => `
+        <option value="${d.driver_name}">
+            ${d.driver_name} - (${d.car_type} | ${d.plate_number})
+        </option>
+    `).join('');
+}
 
+// دالة جلب أفضل السائقين للمدير
+async function loadTopDrivers() {
+    const r = await fetch(`${API}/admin/top-drivers`);
+    const top = await r.json();
+    document.getElementById('top-drivers-list').innerHTML = top.map(d => `
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            ${d.driver_name} (${d.car_type})
+            <span class="badge bg-warning text-dark">${parseFloat(d.avg_stars).toFixed(1)} ⭐</span>
+        </li>
+    `).join('');
+}
+
+// استدعاء الدالة عند تحميل صفحة المدير
+// loadTopDrivers();
     refresh();
 </script>
 </body>
