@@ -101,6 +101,24 @@ const __dirname = dirname(__filename);
 
 app.get('/', (req, res) => {
     res.sendFile(join(__dirname, 'index.html'));
+    // 1. جلب السائقين الأعلى تقييماً (للوحة المدير)
+app.get('/api/admin/top-drivers', async (req, res) => {
+    const sql = `
+        SELECT driver_name, car_type, plate_number, AVG(rating) as avg_stars 
+        FROM trips 
+        JOIN drivers ON trips.driver_name = drivers.driver_name
+        WHERE rating > 0 
+        GROUP BY trips.driver_name 
+        ORDER BY avg_stars DESC 
+        LIMIT 5`;
+    res.json(await executeQuery(sql));
+});
+
+// 2. تعديل جلب السائقين للمستخدم (ليظهر نوع السيارة مع الاسم)
+app.get('/api/drivers/active', async (req, res) => {
+    // نجلب السائقين النشطين فقط مع بيانات سياراتهم
+    res.json(await executeQuery('SELECT driver_name, car_type, plate_number FROM drivers WHERE status = "نشط"'));
+});
 });
 // --- التشغيل النهائي ---
 const PORT = process.env.PORT || 3000;
