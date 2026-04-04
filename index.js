@@ -119,6 +119,35 @@ app.get('/api/drivers/active', async (req, res) => {
     // نجلب السائقين النشطين فقط مع بيانات سياراتهم
     res.json(await executeQuery('SELECT driver_name, car_type, plate_number FROM drivers WHERE status = "نشط"'));
 });
+    async function loadTopDrivers() {
+    try {
+        const res = await fetch(`${API}/admin/top-drivers`);
+        const top = await res.json();
+        const container = document.getElementById('top-drivers-list');
+        
+        if (top.length === 0) {
+            container.innerHTML = '<p class="text-center">لا يوجد تقييمات بعد</p>';
+            return;
+        }
+
+        container.innerHTML = top.map((d, index) => `
+            <div class="d-flex justify-content-between align-items-center mb-2 border-bottom pb-1">
+                <span><strong>${index + 1}.</strong> ${d.driver_name} <br> <small>${d.car_type}</small></span>
+                <span class="badge bg-warning text-dark">${parseFloat(d.avg_stars).toFixed(1)} ⭐</span>
+            </div>
+        `).join('');
+    } catch (e) {
+        console.error("خطأ في جلب أفضل السائقين", e);
+    }
+}
+
+// تعديل دالة التنقل لتشغيل الجلب عند فتح صفحة المدير
+function navTo(page) {
+    document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+    document.getElementById(page).style.display = 'block';
+    
+    if(page === 'admin') loadTopDrivers(); // جلب البيانات عند دخول المدير
+}
 });
 // --- التشغيل النهائي ---
 const PORT = process.env.PORT || 3000;
