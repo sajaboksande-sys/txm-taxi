@@ -245,21 +245,56 @@
     }
 
     // --- أحداث المدير ---
-    async function registerDriver() {
-        const body = { 
-            name: document.getElementById('reg-name').value, 
-            phone: document.getElementById('reg-phone').value, 
-            car: document.getElementById('reg-car').value, 
-            plate: document.getElementById('reg-plate').value, 
-            pass: document.getElementById('reg-pass').value 
-        };
-        const res = await fetch(`${API}/drivers`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
-        if(res.ok) { 
-            alert("✅ تم حفظ السائق بنجاح!"); 
-            document.querySelectorAll('#admin-page input').forEach(i => i.value = ""); 
-            refresh(); 
-        }
+  async function registerDriver() {
+    // 1. جلب القيم من الحقول باستخدام الـ IDs الصحيحة
+    const name = document.getElementById('reg-name').value;
+    const phone = document.getElementById('reg-phone').value;
+    const car = document.getElementById('reg-car').value;
+    const plate = document.getElementById('reg-plate').value;
+    const pass = document.getElementById('reg-pass').value;
+
+    // 2. التحقق من أن البيانات الأساسية ليست فارغة
+    if (!name || !phone || !pass) {
+        return alert("الرجاء إدخال الاسم، رقم الهاتف، وكلمة المرور على الأقل.");
     }
+
+    // 3. تجميع البيانات في كائن بنفس الأسماء التي ينتظرها السيرفر (Key Matching)
+    const bodyData = { 
+        name: name, 
+        phone: phone, 
+        car: car, 
+        plate: plate, 
+        pass: pass 
+    };
+
+    try {
+        // 4. إرسال الطلب للسيرفر
+        const res = await fetch(`${API}/drivers`, { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json' }, 
+            body: JSON.stringify(bodyData) 
+        });
+
+        const result = await res.json();
+
+        if (res.ok) {
+            alert("✅ " + result.message);
+            // تفريغ الحقول بعد النجاح
+            document.getElementById('reg-name').value = "";
+            document.getElementById('reg-phone').value = "";
+            document.getElementById('reg-car').value = "";
+            document.getElementById('reg-plate').value = "";
+            document.getElementById('reg-pass').value = "";
+            
+            refresh(); // تحديث قائمة السائقين في صفحة الراكب فوراً
+        } else {
+            alert("❌ فشل الحفظ: " + (result.error || "خطأ غير معروف"));
+        }
+    } catch (error) {
+        console.error("Fetch Error:", error);
+        alert("🌐 خطأ في الاتصال بالسيرفر. تأكد أن السيرفر يعمل.");
+    }
+}
 
     async function addLocation() {
         const name = document.getElementById('loc-name').value, type = document.getElementById('adm-loc-type').value, price = document.getElementById('loc-price').value;
