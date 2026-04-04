@@ -84,8 +84,24 @@
             </div>
             <button class="btn-taxi" style="margin-top:15px" onclick="finishRate()">إرسال التقييم</button>
         </div>
+  
     </div>
+<div class="card p-3 mb-3">
+    <h5>إضافة وجهة جديدة</h5>
+    <input type="text" id="loc-name" class="form-control mb-2" placeholder="اسم المنطقة">
+    <select id="loc-type" class="form-select mb-2">
+        <option value="داخل مسلاتة">داخل مدينة مسلاتة 🏠</option>
+        <option value="خارج مسلاتة">خارج مدينة مسلاتة 🛣️</option>
+    </select>
+    <input type="number" id="loc-price" class="form-control mb-2" placeholder="السعر بالدينار">
+    <button class="btn btn-warning w-100" onclick="addLocation()">إضافة الوجهة</button>
+</div>
 
+<div class="card p-3 border-warning">
+    <h5>⭐ قائمة أفضل السائقين</h5>
+    <ul id="top-drivers-list" class="list-group list-group-flush">
+        </ul>
+</div>
     <div id="driver-page" class="page">
         <div id="dr-login-box" class="card">
             <h3>دخول الكابتن</h3>
