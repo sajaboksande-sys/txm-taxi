@@ -88,33 +88,38 @@
     </div>
 
 
-    <div id="driver-page" class="page">
-        <div id="dr-login-box" class="card">
-            <h3>دخول الكابتن</h3>
-            <input type="text" id="drPhone" placeholder="رقم الهاتف">
-            <input type="password" id="drPass" placeholder="الرمز">
-            <button class="btn-taxi" onclick="loginDr()">دخول ونشاط</button>
-        </div>
-        <div id="dr-dash" style="display:none;">
-            <div class="card"><h4 id="dr-hi">أهلاً كابتن</h4><p>حالتك: <span style="color:var(--success)">متصل بالرادار 📡</span></p></div>
-            <div class="card"><h3>الطلبات الواردة</h3><div id="dr-orders">في انتظار الركاب...</div></div>
-        </div>
+    <div id="driver-register">
+    <h3>تسجيل سائق جديد</h3>
+    <input type="text" id="reg-name" placeholder="الاسم الرباعي" class="form-control mb-2">
+    <input type="text" id="reg-phone" placeholder="رقم الهاتف" class="form-control mb-2">
+    
+    <input type="text" id="reg-car" placeholder="نوع السيارة (مثلاً: تويوتا كامري)" class="form-control mb-2">
+    <input type="text" id="reg-plate" placeholder="رقم اللوحة (مثلاً: 15-2421)" class="form-control mb-2">
+    
+    <button class="btn-taxi w-100" onclick="registerDriver()">تسجيل الحساب</button>
+</div>
+
+   <div id="admin" class="page" style="display:none;">
+    <div class="card p-3 mb-3">
+        <h3>🏠 إدارة الأسعار</h3>
+        <input type="text" id="loc-name" class="form-control mb-2" placeholder="اسم المنطقة">
+        
+        <select id="loc-type" class="form-select mb-2">
+            <option value="داخل مسلاتة">داخل مدينة مسلاتة 🏠</option>
+            <option value="خارج مسلاتة">خارج مدينة مسلاتة 🛣️</option>
+        </select>
+        
+        <input type="number" id="loc-price" class="form-control mb-2" placeholder="السعر بالدينار">
+        <button class="btn-taxi w-100" onclick="addLocation()">إضافة الوجهة</button>
     </div>
 
-    <div id="admin-page" class="page">
-        <div class="card">
-            <h3>إضافة سائق</h3>
-            <input type="text" id="adN" placeholder="الاسم">
-            <input type="text" id="adP" placeholder="الهاتف">
-            <input type="password" id="adS" placeholder="رمز الدخول">
-            <button class="btn-taxi" onclick="addDriver()">حفظ الكابتن</button>
+    <div class="card p-3 border-warning">
+        <h3 class="text-warning"><i class="fas fa-star"></i> أعلى السائقين تقييماً</h3>
+        <div id="top-drivers-list">
+            <p class="text-muted text-center">جاري تحميل القائمة...</p>
         </div>
-     <div class="card p-3 mb-3">
-    <h5>إضافة وجهة جديدة</h5>
-    <input type="text" id="loc-name" class="form-control mb-2" placeholder="اسم المنطقة">
-    <select id="loc-type" class="form-select mb-2">
-        <option value="داخل مسلاتة">داخل مدينة مسلاتة 🏠</option>
-        <option value="خارج مسلاتة">خارج مدينة مسلاتة 🛣️</option>
+    </div>
+</div>
     </select>
     <input type="number" id="loc-price" class="form-control mb-2" placeholder="السعر بالدينار">
     <button class="btn btn-warning w-100" onclick="addLocation()">إضافة الوجهة</button>
