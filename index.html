@@ -3,42 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TX&M Msallata - SMART STATION</title>
+    <title>TX&M Msallata - الرادار الذكي</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --taxi-gold: #facc15; --dark-bg: #0f172a; --card-bg: #1e293b; --text-main: #f8fafc; --success: #22c55e; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--dark-bg); color: var(--text-main); margin: 0; padding-bottom: 90px; overflow-x: hidden; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--dark-bg); color: var(--text-main); margin: 0; padding-bottom: 90px; }
         
-        .header { 
-            display: flex; align-items: center; justify-content: center; gap: 15px;
-            padding: 15px; background: var(--card-bg); border-bottom: 3px solid var(--taxi-gold); 
-            position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-        .header h1 { margin: 0; font-size: 26px; color: var(--taxi-gold); letter-spacing: 2px; font-weight: 800; }
-        .logo-icon { width: 40px; height: 40px; }
+        .header { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 15px; background: var(--card-bg); border-bottom: 3px solid var(--taxi-gold); position: sticky; top: 0; z-index: 1000; }
+        .header h1 { margin: 0; font-size: 22px; color: var(--taxi-gold); }
 
         .container { padding: 15px; max-width: 500px; margin: auto; }
-        .page { display: none; animation: fadeIn 0.4s ease-out; }
-        .active-page { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .page { display: none; }
+        .active-page { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .card { background: var(--card-bg); padding: 20px; border-radius: 20px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
-        h3 { color: var(--taxi-gold); display: flex; align-items: center; gap: 10px; font-size: 18px; margin-top: 0; }
+        .card { background: var(--card-bg); padding: 20px; border-radius: 15px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.05); }
+        h3 { color: var(--taxi-gold); font-size: 18px; margin-top: 0; display: flex; align-items: center; gap: 8px; }
         
-        input, select { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #334155; background: #0f172a; color: white; margin-bottom: 12px; box-sizing: border-box; font-size: 15px; }
-        .btn-taxi { width: 100%; padding: 16px; background: var(--taxi-gold); border: none; border-radius: 12px; color: #000; font-weight: 800; cursor: pointer; transition: 0.3s; }
-        .btn-taxi:active { transform: scale(0.98); opacity: 0.9; }
+        input, select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: white; margin-bottom: 10px; box-sizing: border-box; }
+        .btn-taxi { width: 100%; padding: 14px; background: var(--taxi-gold); border: none; border-radius: 10px; color: #000; font-weight: bold; cursor: pointer; }
         
-        .navbar { position: fixed; bottom: 0; width: 100%; background: var(--card-bg); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid var(--taxi-gold); z-index: 1001; }
-        .navbar button { background: none; border: none; color: #64748b; font-size: 22px; cursor: pointer; transition: 0.3s; text-align: center; }
-        .navbar button.active { color: var(--taxi-gold); transform: translateY(-5px); }
-        .navbar button span { display: block; font-size: 10px; margin-top: 4px; font-weight: bold; }
+        .navbar { position: fixed; bottom: 0; width: 100%; background: var(--card-bg); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid var(--taxi-gold); z-index: 1001; }
+        .navbar button { background: none; border: none; color: #64748b; cursor: pointer; text-align: center; }
+        .navbar button.active { color: var(--taxi-gold); }
+        .navbar button span { display: block; font-size: 11px; margin-top: 4px; }
 
-        .star { font-size: 30px; color: #334155; cursor: pointer; }
-        .star.gold { color: var(--taxi-gold); text-shadow: 0 0 10px rgba(250, 204, 21, 0.4); }
-        .order-item { background: #0f172a; padding: 15px; border-radius: 15px; margin-top: 10px; border-right: 4px solid var(--taxi-gold); }
-        .pulse { animation: pulse-anim 2s infinite; }
-        @keyframes pulse-anim { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .star { font-size: 25px; color: #334155; cursor: pointer; }
+        .star.gold { color: var(--taxi-gold); }
+        .order-item { background: #0f172a; padding: 12px; border-radius: 10px; margin-top: 10px; border-right: 4px solid var(--taxi-gold); }
     </style>
 </head>
 <body>
@@ -47,44 +39,39 @@
 <audio id="snd-ok" src="https://assets.mixkit.co/active_storage/sfx/2051/2051-preview.mp3"></audio>
 
 <div class="header">
-    <div class="logo-icon">
-        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <path d="M 10 70 A 10 10 0 0 1 10 50 A 10 10 0 0 1 10 30 H 20 L 30 15 H 70 L 80 30 H 90 A 10 10 0 0 1 90 50 A 10 10 0 0 1 90 70 Z" fill="#facc15"/>
-        </svg>
-    </div>
-    <h1>TX&M</h1>
-    <small style="color: #94a3b8; position:absolute; bottom:5px; font-size:10px;">SMART MSALLATA</small>
+    <i class="fas fa-taxi" style="color:var(--taxi-gold); font-size: 24px;"></i>
+    <h1>TX&M MSALLATA</h1>
 </div>
 
 <div class="container">
     <div id="user-page" class="page active-page">
         <div id="u-step-1" class="card">
-            <h3><i class="fas fa-map-marker-alt"></i> اطلب رحلة الآن</h3>
-            <input type="text" id="uName" placeholder="اسم الراكب">
+            <h3><i class="fas fa-route"></i> حجز رحلة جديدة</h3>
+            <input type="text" id="uName" placeholder="اسمك الكريم">
             <input type="tel" id="uPhone" placeholder="رقم الهاتف">
             <select id="uType" onchange="loadLocs()">
                 <option value="داخل مسلاتة">داخل مسلاتة 🏠</option>
                 <option value="خارج مسلاتة">خارج مسلاتة 🛣️</option>
             </select>
             <select id="uLoc"></select>
-            <select id="uDr"><option>جاري تحميل السائقين...</option></select>
-            <button class="btn-taxi" onclick="sendTrip()">تأكيد الحجز 🚕</button>
+            <select id="uDr"></select>
+            <button class="btn-taxi" onclick="sendTrip()">اطلب التاكسي الآن</button>
         </div>
 
         <div id="u-step-wait" class="card" style="display:none; text-align:center;">
-            <h3 style="justify-content:center;" class="pulse">جاري الاتصال بالسائق...</h3>
-            <div id="u-arrival" style="display:none; background:rgba(34,197,94,0.1); padding:15px; border-radius:15px; border:1px solid var(--success); margin-top:15px;">
-                <h4 style="color:var(--success)">✅ تم قبول طلبك!</h4>
-                <p>الوصول خلال: <b id="v-time" style="color:var(--taxi-gold); font-size:20px;">-</b> دقيقة</p>
+            <h3 style="justify-content:center;">جاري البحث عن السائق...</h3>
+            <div id="u-arrival" style="display:none; margin-top:15px; color:var(--success);">
+                <h4>✅ تم القبول!</h4>
+                <p>يصلك السائق خلال: <b id="v-time">-</b> دقيقة</p>
             </div>
         </div>
 
         <div id="u-step-rate" class="card" style="display:none; text-align:center;">
-            <h3>تقييم الرحلة</h3>
+            <h3>تقييم السائق</h3>
             <div id="stars">
                 <span class="star" onclick="setStar(1)">★</span><span class="star" onclick="setStar(2)">★</span><span class="star" onclick="setStar(3)">★</span><span class="star" onclick="setStar(4)">★</span><span class="star" onclick="setStar(5)">★</span>
             </div>
-            <button class="btn-taxi" style="margin-top:15px" onclick="finishRate()">إرسال التقييم</button>
+            <button class="btn-taxi" style="margin-top:10px" onclick="finishRate()">إتمام التقييم</button>
         </div>
     </div>
 
@@ -94,27 +81,26 @@
             <input type="tel" id="drPhone" placeholder="رقم الهاتف">
             <input type="password" id="drPass" placeholder="كلمة المرور">
             <button class="btn-taxi" onclick="loginDr()">دخول</button>
-            <hr style="border-color:rgba(255,255,255,0.1); margin:20px 0;">
-            <p style="text-align:center; font-size:12px;">ليس لديك حساب؟ سجل أدناه</p>
+            <hr style="opacity:0.1; margin:15px 0;">
+            <h3>تسجيل جديد</h3>
             <input type="text" id="reg-name" placeholder="الاسم الكامل">
-            <input type="text" id="reg-car" placeholder="نوع السيارة (مثلاً: كيا تيلو)">
+            <input type="text" id="reg-car" placeholder="نوع السيارة">
             <input type="text" id="reg-plate" placeholder="رقم اللوحة">
-            <button class="btn-taxi" style="background:#334155; color:white;" onclick="registerDriver()">تسجيل سائق جديد</button>
+            <button class="btn-taxi" style="background:#475569; color:white;" onclick="registerDriver()">تسجيل حساب سائق</button>
         </div>
 
         <div id="dr-dash" style="display:none;">
             <div class="card">
-                <h3 id="dr-hi">أهلاً كابتن</h3>
-                <p id="dr-status" style="color:var(--success)">● أنت الآن نشط وتستقبل الطلبات</p>
+                <h3 id="dr-hi">مرحباً كابتن</h3>
+                <div id="dr-orders">لا يوجد طلبات حالياً...</div>
             </div>
-            <div id="dr-orders"></div>
         </div>
     </div>
 
     <div id="admin-page" class="page">
         <div class="card">
-            <h3>🏠 إدارة الأسعار والوجهات</h3>
-            <input type="text" id="loc-name" placeholder="اسم المنطقة">
+            <h3>📍 إضافة وجهة وأسعار</h3>
+            <input type="text" id="loc-name" placeholder="المنطقة (مثلاً: القلعة)">
             <select id="adm-loc-type">
                 <option value="داخل مسلاتة">داخل مسلاتة 🏠</option>
                 <option value="خارج مسلاتة">خارج مسلاتة 🛣️</option>
@@ -124,10 +110,8 @@
         </div>
 
         <div class="card">
-            <h3 class="text-warning"><i class="fas fa-star"></i> قائمة أفضل السائقين تقييماً</h3>
-            <div id="top-drivers-list">
-                <p style="text-align:center; color:#64748b;">جاري التحميل...</p>
-            </div>
+            <h3>⭐ أفضل السائقين تقييماً</h3>
+            <div id="top-drivers-list">جاري التحميل...</div>
         </div>
     </div>
 </div>
@@ -138,16 +122,15 @@
     <button onclick="navTo('admin')" id="btn-admin"><i class="fas fa-user-shield"></i><span>المدير</span></button>
 </nav>
 
-<div id="modal-time" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:2000; justify-content:center; align-items:center;">
-    <div class="card" style="width:80%;">
-        <h3>متى ستصل للراكب؟</h3>
+<div id="modal-time" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; justify-content:center; align-items:center;">
+    <div class="card" style="width:85%;">
+        <h3>وقت الوصول المتوقع؟</h3>
         <select id="time-sel">
             <option value="5">5 دقائق</option>
             <option value="10">10 دقائق</option>
             <option value="15">15 دقيقة</option>
-            <option value="20">20 دقيقة</option>
         </select>
-        <button class="btn-taxi" onclick="acceptTrip()">تأكيد القبول والانطلاق</button>
+        <button class="btn-taxi" onclick="acceptTrip()">تأكيد القبول</button>
     </div>
 </div>
 
@@ -155,7 +138,6 @@
     const API = 'https://txm-taxi.vercel.app/api';
     let curTid = null, locsData = [], userStars = 5, myDr = null, curOrder = null;
 
-    // التنقل بين الصفحات
     function navTo(p) {
         document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active-page'));
         document.querySelectorAll('.navbar button').forEach(b => b.classList.remove('active'));
@@ -165,54 +147,36 @@
         refresh();
     }
 
-    // تحديث البيانات العامة
     async function refresh() {
         try {
             const resL = await fetch(`${API}/locations`); 
             locsData = await resL.json(); 
             loadLocs();
-
             const resD = await fetch(`${API}/drivers/active`); 
             const drs = await resD.json();
-            document.getElementById('uDr').innerHTML = drs.map(d => `<option value="${d.driver_name}">${d.driver_name} (${d.car_type || 'سيارة'})</option>`).join('') || '<option>لا يوجد سائقين نشطين حالياً</option>';
-        } catch(e) { console.error("Refresh Error", e); }
+            document.getElementById('uDr').innerHTML = drs.map(d => `<option value="${d.driver_name}">${d.driver_name} (${d.car_type})</option>`).join('') || '<option>لا يوجد سائقين حالياً</option>';
+        } catch(e) {}
     }
 
-    // فلترة المواقع حسب النوع (داخل/خارج مسلاتة)
     function loadLocs() {
         const type = document.getElementById('uType').value;
         const filtered = locsData.filter(l => l.location_type === type);
-        const select = document.getElementById('uLoc');
-        select.innerHTML = filtered.map(l => `<option value="${l.location_name}" data-p="${l.price}">${l.location_name} (${l.price} د.ل)</option>`).join('') || '<option>لا توجد وجهات مضافة</option>';
+        document.getElementById('uLoc').innerHTML = filtered.map(l => `<option value="${l.location_name}" data-p="${l.price}">${l.location_name} (${l.price} د.ل)</option>`).join('');
     }
 
-    // إرسال طلب الرحلة
     async function sendTrip() {
         const name = document.getElementById('uName').value;
         const phone = document.getElementById('uPhone').value;
         const loc = document.getElementById('uLoc');
-        const dr = document.getElementById('uDr').value;
-
-        if(!name || !phone || !loc.value) return alert("يرجى إكمال البيانات");
-
-        const body = { 
-            passenger_name: name, 
-            passenger_phone: phone, 
-            destination: loc.value, 
-            driver_name: dr, 
-            price: loc.options[loc.selectedIndex].getAttribute('data-p') 
-        };
-
+        if(!name || !phone) return alert("الرجاء إدخال بياناتك");
+        const body = { passenger_name: name, passenger_phone: phone, destination: loc.value, driver_name: document.getElementById('uDr').value, price: loc.options[loc.selectedIndex].getAttribute('data-p') };
         const res = await fetch(`${API}/trips`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
-        const d = await res.json(); 
-        curTid = d.tripId;
-
+        const d = await res.json(); curTid = d.tripId;
         document.getElementById('u-step-1').style.display='none'; 
         document.getElementById('u-step-wait').style.display='block';
         checkTripStatus();
     }
 
-    // فحص حالة الطلب (هل قبل السائق؟)
     function checkTripStatus() {
         const itv = setInterval(async () => {
             const r = await fetch(`${API}/trips/${curTid}`); 
@@ -222,93 +186,57 @@
                 document.getElementById('u-arrival').style.display='block';
                 document.getElementById('v-time').innerText = t.arrival_time;
                 clearInterval(itv);
-                setTimeout(() => { 
-                    document.getElementById('u-step-wait').style.display='none'; 
-                    document.getElementById('u-step-rate').style.display='block'; 
-                }, 6000);
+                setTimeout(() => { document.getElementById('u-step-wait').style.display='none'; document.getElementById('u-step-rate').style.display='block'; }, 5000);
             }
         }, 3000);
     }
 
-    // التقييم والنجوم
-    function setStar(n) { 
-        userStars = n; 
-        document.querySelectorAll('.star').forEach((s,i) => s.classList.toggle('gold', i<n)); 
-    }
-    
+    function setStar(n) { userStars = n; document.querySelectorAll('.star').forEach((s,i) => s.classList.toggle('gold', i<n)); }
     async function finishRate() { 
         await fetch(`${API}/trips/${curTid}/rate`, { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({rating: userStars}) }); 
-        alert("شكراً لك! تم إتمام الرحلة."); 
-        location.reload(); 
+        alert("تمت الرحلة بنجاح!"); location.reload(); 
     }
 
-    // تسجيل دخول السائق
+    async function registerDriver() {
+        const body = { name: document.getElementById('reg-name').value, phone: document.getElementById('drPhone').value, car: document.getElementById('reg-car').value, plate: document.getElementById('reg-plate').value, pass: document.getElementById('drPass').value };
+        await fetch(`${API}/drivers`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+        alert("تم التسجيل! يمكنك الدخول الآن.");
+    }
+
     async function loginDr() {
-        const phone = document.getElementById('drPhone').value;
-        const pass = document.getElementById('drPass').value;
-        const res = await fetch(`${API}/driver/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({phone, pass}) });
+        const res = await fetch(`${API}/driver/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({phone: drPhone.value, pass: drPass.value}) });
         const d = await res.json();
         if(res.ok) { 
             myDr = d.driver; 
             document.getElementById('dr-login-box').style.display='none'; 
             document.getElementById('dr-dash').style.display='block';
-            document.getElementById('dr-hi').innerText = "أهلاً بالكابتن: " + myDr.driver_name;
+            document.getElementById('dr-hi').innerText = "الكابتن: " + myDr.driver_name;
             startOrderPolling();
-        } else { alert("عذراً، البيانات غير صحيحة"); }
+        } else alert("خطأ في البيانات");
     }
 
-    // تسجيل سائق جديد
-    async function registerDriver() {
-        const body = {
-            name: document.getElementById('reg-name').value,
-            phone: document.getElementById('drPhone').value,
-            car: document.getElementById('reg-car').value,
-            plate: document.getElementById('reg-plate').value,
-            pass: document.getElementById('drPass').value
-        };
-        const res = await fetch(`${API}/drivers`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
-        if(res.ok) alert("تم التسجيل! يمكنك الآن الدخول بحسابك.");
-    }
-
-    // جلب الطلبات الجديدة للسائق
     function startOrderPolling() {
         setInterval(async () => {
-            const r = await fetch(`${API}/drivers`); // سنعدل السيرفر لاحقاً لجلب طلبات معينة
-            const res = await fetch(`${API}/trips/pending/${myDr.driver_name}`); // مسار افتراضي
-            // للتبسيط، سنعرض آخر رحلة معلقة لهذا السائق من قائمة الكل
-            const allRes = await fetch(`${API}/locations`); // فقط للتجربة، الكود يحتاج مسار trips الخاص بالسائق
-            // سنعتمد على منطق السيرفر في التحديث القادم
-        }, 5000);
+            const r = await fetch(`${API}/trips/pending/${myDr.driver_name}`); // تأكد من وجود المسار في السيرفر
+            // ملاحظة: الكود يحتاج لدالة في السيرفر تجلب الطلبات المعلقة لهذا السائق تحديداً
+        }, 4000);
     }
 
-    // إدارة المدير
     async function addLocation() {
-        const name = document.getElementById('loc-name').value;
-        const type = document.getElementById('adm-loc-type').value;
-        const price = document.getElementById('loc-price').value;
-        await fetch(`${API}/locations`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name, type, price}) });
-        alert("تمت إضافة الوجهة بنجاح");
-        refresh();
+        const body = { name: document.getElementById('loc-name').value, type: document.getElementById('adm-loc-type').value, price: document.getElementById('loc-price').value };
+        await fetch(`${API}/locations`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+        alert("تم الحفظ بنجاح"); refresh();
     }
 
     async function loadTopDrivers() {
         const r = await fetch(`${API}/admin/top-drivers`);
         const top = await r.json();
         document.getElementById('top-drivers-list').innerHTML = top.map((d, i) => `
-            <div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #334155;">
-                <span>${i+1}. ${d.driver_name} (${d.car_type})</span>
+            <div style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid #334155;">
+                <span>${i+1}. ${d.driver_name}</span>
                 <span style="color:var(--taxi-gold)">${parseFloat(d.avg_stars).toFixed(1)} ★</span>
             </div>
-        `).join('') || "لا توجد تقييمات حالياً";
-    }
-
-    function showAccept(id) { curOrder = id; document.getElementById('modal-time').style.display='flex'; }
-    
-    async function acceptTrip() {
-        const time = document.getElementById('time-sel').value;
-        await fetch(`${API}/trips/${curOrder}/accept`, { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({arrival_time: time}) });
-        document.getElementById('modal-time').style.display='none';
-        alert("تم قبول الطلب، بالتوفيق كابتن!");
+        `).join('') || "لا توجد تقييمات";
     }
 
     refresh();
