@@ -92,7 +92,16 @@ app.patch('/api/trips/:id/rate', async (req, res) => {
 app.get('/api/admin/stats', async (req, res) => {
     res.json(await executeQuery('SELECT driver_name, AVG(rating) as avg_stars FROM trips WHERE rating > 0 GROUP BY driver_name ORDER BY avg_stars DESC'));
 });
+// كود عرض واجهة المستخدم
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+app.get('/', (req, res) => {
+    res.sendFile(join(__dirname, 'index.html'));
+});
 // --- التشغيل النهائي ---
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 TX&M Secure Server on port ${PORT}`));
