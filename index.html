@@ -31,7 +31,7 @@
 
         .star { font-size: 25px; color: #334155; cursor: pointer; }
         .star.gold { color: var(--taxi-gold); }
-        .order-item { background: #0f172a; padding: 12px; border-radius: 10px; margin-top: 10px; border-right: 4px solid var(--taxi-gold); }
+        .order-item { background: #0f172a; padding: 15px; border-radius: 12px; margin-top: 10px; border-right: 5px solid var(--taxi-gold); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body>
@@ -55,12 +55,12 @@
                 <option value="خارج مسلاتة">خارج مسلاتة 🛣️</option>
             </select>
             <select id="uLoc"></select>
-            <select id="uDr"></select>
+            <select id="uDr"><option>جاري تحميل السائقين...</option></select>
             <button class="btn-taxi" onclick="sendTrip()">تأكيد الطلب 🚕</button>
         </div>
 
         <div id="u-step-wait" class="card" style="display:none; text-align:center;">
-            <h3>جاري البحث عن كابتن...</h3>
+            <h3 id="wait-msg">جاري البحث عن كابتن...</h3>
             <div id="u-arrival" style="display:none; color:var(--success); margin-top:15px;">
                 <h4>✅ تم قبول طلبك</h4>
                 <p>يصلك السائق خلال: <b id="v-time">-</b> دقيقة</p>
@@ -127,10 +127,23 @@
     <button onclick="navTo('admin')" id="btn-admin"><i class="fas fa-user-shield"></i><span>المدير</span></button>
 </nav>
 
-<script>
-    const API = 'https://txm-taxi.vercel.app/api';
-    let curTid = null, locsData = [], userStars = 5, myDr = null;
+<div id="modal-time" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; justify-content:center; align-items:center;">
+    <div class="card" style="width:85%;">
+        <h3>وقت الوصول المتوقع؟</h3>
+        <select id="time-sel">
+            <option value="5">5 دقائق</option>
+            <option value="10">10 دقائق</option>
+            <option value="15">15 دقيقة</option>
+        </select>
+        <button class="btn-taxi" onclick="acceptTrip()">تأكيد القبول</button>
+    </div>
+</div>
 
+<script>
+    const API = 'https://txm-taxi.vercel.app/api'; // استبدل برابط Render الخاص بك
+    let curTid = null, locsData = [], userStars = 5, myDr = null, curOrder = null;
+
+    // --- نظام التنقل ---
     function navTo(p) {
         document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active-page'));
         document.querySelectorAll('.navbar button').forEach(b => b.classList.remove('active'));
@@ -140,6 +153,7 @@
         refresh();
     }
 
+    // --- تحديث البيانات العامة ---
     async function refresh() {
         try {
             const resL = await fetch(`${API}/locations`); 
@@ -147,20 +161,22 @@
             loadLocs();
             const resD = await fetch(`${API}/drivers/active`); 
             const drs = await resD.json();
-            document.getElementById('uDr').innerHTML = drs.map(d => `<option value="${d.driver_name}">${d.driver_name} (${d.car_type})</option>`).join('') || '<option>لا يوجد سائقين نشطين</option>';
-        } catch(e) {}
+            document.getElementById('uDr').innerHTML = drs.map(d => `<option value="${d.driver_name}">${d.driver_name} (${d.car_type || 'سيارة'})</option>`).join('') || '<option>لا يوجد سائقين نشطين</option>';
+        } catch(e) { console.error("Refresh Error"); }
     }
 
     function loadLocs() {
         const type = document.getElementById('uType').value;
         const filtered = locsData.filter(l => l.location_type === type);
-        document.getElementById('uLoc').innerHTML = filtered.map(l => `<option value="${l.location_name}" data-p="${l.price}">${l.location_name} (${l.price} د.ل)</option>`).join('');
+        document.getElementById('uLoc').innerHTML = filtered.map(l => `<option value="${l.location_name}" data-p="${l.price}">${l.location_name} (${l.price} د.ل)</option>`).join('') || '<option>لا توجد وجهات</option>';
     }
 
+    // --- أحداث الراكب ---
     async function sendTrip() {
         const n = document.getElementById('uName').value, p = document.getElementById('uPhone').value, l = document.getElementById('uLoc');
-        if(!n || !p) return alert("يرجى إدخال اسمك وهاتفك");
-        const res = await fetch(`${API}/trips`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ passenger_name:n, passenger_phone:p, destination:l.value, driver_name:document.getElementById('uDr').value, price:l.options[l.selectedIndex].getAttribute('data-p') }) });
+        if(!n || !p || !l.value) return alert("يرجى إكمال البيانات");
+        const body = { passenger_name:n, passenger_phone:p, destination:l.value, driver_name:document.getElementById('uDr').value, price:l.options[l.selectedIndex].getAttribute('data-p') };
+        const res = await fetch(`${API}/trips`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
         const d = await res.json(); curTid = d.tripId;
         document.getElementById('u-step-1').style.display='none'; document.getElementById('u-step-wait').style.display='block';
         checkStatus();
@@ -168,20 +184,67 @@
 
     function checkStatus() {
         const itv = setInterval(async () => {
+            if(!curTid) return clearInterval(itv);
             const r = await fetch(`${API}/trips/${curTid}`); const t = await r.json();
             if(t && t.status === 'Accepted') {
                 document.getElementById('snd-ok').play();
                 document.getElementById('u-arrival').style.display='block'; document.getElementById('v-time').innerText = t.arrival_time;
+                document.getElementById('wait-msg').innerText = "تم قبول طلبك!";
                 clearInterval(itv);
-                setTimeout(() => { document.getElementById('u-step-wait').style.display='none'; document.getElementById('u-step-rate').style.display='block'; }, 5000);
+                setTimeout(() => { document.getElementById('u-step-wait').style.display='none'; document.getElementById('u-step-rate').style.display='block'; }, 6000);
             }
         }, 3000);
     }
 
     function setStar(n) { userStars = n; document.querySelectorAll('.star').forEach((s,i) => s.classList.toggle('gold', i<n)); }
-    async function finishRate() { await fetch(`${API}/trips/${curTid}/rate`, { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({rating: userStars}) }); location.reload(); }
+    async function finishRate() { 
+        await fetch(`${API}/trips/${curTid}/rate`, { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({rating: userStars}) }); 
+        alert("شكراً لك! تم إتمام الرحلة."); location.reload(); 
+    }
 
-    // دالة إضافة سائق (تستدعى من صفحة المدير)
+    // --- أحداث السائق ---
+    async function loginDr() {
+        const phone = document.getElementById('drPhone').value, pass = document.getElementById('drPass').value;
+        const res = await fetch(`${API}/driver/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({phone, pass}) });
+        const d = await res.json();
+        if(res.ok) { 
+            myDr = d.driver; 
+            document.getElementById('dr-login-box').style.display='none'; 
+            document.getElementById('dr-dash').style.display='block'; 
+            document.getElementById('dr-hi').innerText = "أهلاً كابتن: " + myDr.driver_name;
+            startOrderPolling();
+        } else alert("بيانات الدخول غير صحيحة");
+    }
+
+    function startOrderPolling() {
+        setInterval(async () => {
+            if(!myDr) return;
+            const r = await fetch(`${API}/trips`); 
+            const all = await r.json();
+            const mine = all.filter(t => t.driver_name === myDr.driver_name && t.status === 'Pending');
+            if(mine.length > 0) document.getElementById('snd-new').play();
+            document.getElementById('dr-orders').innerHTML = mine.map(t => `
+                <div class="order-item">
+                    <b>👤 الراكب: ${t.passenger_name}</b><br>
+                    <small>📍 الوجهة: ${t.destination}</small><br>
+                    <small>💰 السعر: ${t.price} د.ل</small>
+                    <div style="display:flex; gap:10px; margin-top:10px;">
+                        <button class="btn-taxi" onclick="showModal(${t.id})" style="flex:1; padding:8px;">قبول</button>
+                        <a href="tel:${t.passenger_phone}" style="background:var(--success); color:black; padding:8px; border-radius:10px; text-decoration:none; flex:1; text-align:center;">اتصال</a>
+                    </div>
+                </div>`).join('') || "بانتظار طلبات جديدة...";
+        }, 4000);
+    }
+
+    function showModal(id) { curOrder = id; document.getElementById('modal-time').style.display='flex'; }
+    async function acceptTrip() {
+        const time = document.getElementById('time-sel').value;
+        await fetch(`${API}/trips/${curOrder}/accept`, { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({arrival_time: time}) });
+        document.getElementById('modal-time').style.display='none';
+        alert("انطلق! تم إخطار الراكب بوقت وصولك.");
+    }
+
+    // --- أحداث المدير ---
     async function registerDriver() {
         const body = { 
             name: document.getElementById('reg-name').value, 
@@ -191,27 +254,30 @@
             pass: document.getElementById('reg-pass').value 
         };
         const res = await fetch(`${API}/drivers`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
-        if(res.ok) { alert("تمت إضافة السائق بنجاح!"); refresh(); }
-    }
-
-    async function loginDr() {
-        const res = await fetch(`${API}/driver/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({phone: drPhone.value, pass: drPass.value}) });
-        const d = await res.json();
-        if(res.ok) { myDr = d.driver; document.getElementById('dr-login-box').style.display='none'; document.getElementById('dr-dash').style.display='block'; document.getElementById('dr-hi').innerText = "الكابتن: " + myDr.driver_name; }
-        else alert("بيانات الدخول غير صحيحة");
+        if(res.ok) { 
+            alert("✅ تم حفظ السائق بنجاح!"); 
+            document.querySelectorAll('#admin-page input').forEach(i => i.value = ""); 
+            refresh(); 
+        }
     }
 
     async function addLocation() {
         const name = document.getElementById('loc-name').value, type = document.getElementById('adm-loc-type').value, price = document.getElementById('loc-price').value;
+        if(!name || !price) return alert("املأ بيانات الوجهة");
         await fetch(`${API}/locations`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name, type, price}) });
-        alert("تم الحفظ"); refresh();
+        alert("تمت إضافة الموقع بنجاح"); refresh();
     }
 
     async function loadTopDrivers() {
         const r = await fetch(`${API}/admin/top-drivers`); const top = await r.json();
-        document.getElementById('top-drivers-list').innerHTML = top.map((d, i) => `<div style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid rgba(255,255,255,0.05);"><span>${i+1}. ${d.driver_name}</span><span style="color:var(--taxi-gold)">${parseFloat(d.avg_stars).toFixed(1)} ★</span></div>`).join('') || "لا توجد بيانات";
+        document.getElementById('top-drivers-list').innerHTML = top.map((d, i) => `
+            <div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid rgba(255,255,255,0.05);">
+                <span>${i+1}. ${d.driver_name}</span>
+                <span style="color:var(--taxi-gold)">${parseFloat(d.avg_stars).toFixed(1)} ★</span>
+            </div>`).join('') || "لا يوجد تقييمات حتى الآن";
     }
 
+    // التشغيل عند الفتح
     refresh();
 </script>
 </body>
