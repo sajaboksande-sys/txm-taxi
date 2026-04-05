@@ -51,7 +51,7 @@
             <h3><i class="fas fa-id-card"></i> دخول السائقين</h3>
             <input type="tel" id="drPhone" placeholder="رقم الهاتف">
             <input type="password" id="drPass" placeholder="كلمة المرور">
-            <button class="btn-taxi" onclick="loginDr()">تسجيل الدخول</button>
+           <button class="btn-taxi" onclick="loginDr()">تسجيل الدخول</button>
         </div>
         <div id="dr-dash" style="display:none;" class="card">
             <h3 id="dr-hi">لوحة التحكم</h3>
@@ -93,7 +93,7 @@
     const API = 'https://txm-taxi.onrender.com/api';
     let locsData = [];
 
-    // التنقل بين الصفحات
+    // 1. التنقل بين الصفحات
     function navTo(pageId) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
         document.getElementById(pageId + '-page').classList.add('active-page');
@@ -101,7 +101,7 @@
         document.getElementById('btn-' + pageId).classList.add('active');
     }
 
-    // تحميل الوجهات بناءً على النوع
+    // 2. تحميل الوجهات بناءً على النوع (داخل/خارج مسلاتة)
     function loadLocs() {
         const type = document.getElementById('uType').value;
         const filtered = locsData.filter(l => l.location_type === type);
@@ -110,77 +110,93 @@
         ).join('') || '<option>لا توجد وجهات مضافة</option>';
     }
 
-    // تحديث البيانات
-   async function refresh() {
-    try {
-        // جلب الوجهات
-        const resL = await fetch(`${API}/locations`);
-        locsData = await resL.json();
-        loadLocs();
+    // 3. تحديث البيانات (الوجهات والسائقين) عند فتح التطبيق
+    async function refresh() {
+        try {
+            const resL = await fetch(`${API}/locations`);
+            locsData = await resL.json();
+            loadLocs();
 
-        // جلب السائقين
-        const resD = await fetch(`${API}/drivers`); 
-        const drs = await resD.json();
-        const uDr = document.getElementById('uDr');
-        if(uDr) {
-            uDr.innerHTML = drs.map(d => 
-                `<option value="${d.driver_name}">${d.driver_name} - ${d.car_type}</option>`
-            ).join('') || '<option disabled>لا يوجد سائقين مسجلين</option>';
-        }
-    } catch(e) { console.error("Error refreshing data:", e); }
-}
-
-// تسجيل سائق جديد (من صفحة الإدارة)
-async function registerDriver() {
-    // جلب القيم من الخانات (تأكد أن الـ id في HTML هو reg-name و reg-phone... إلخ)
-    const name = document.getElementById('reg-name').value;
-    const phone = document.getElementById('reg-phone').value;
-    const car = document.getElementById('reg-car').value;
-    const plate = document.getElementById('reg-plate').value;
-    const pass = document.getElementById('reg-pass').value;
-
-    if(!name || !phone || !pass) return alert("⚠️ يرجى ملء البيانات الأساسية (الاسم، الهاتف، كلمة المرور)");
-
-    try {
-        const res = await fetch(`${API}/drivers`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                name: name, 
-                phone: phone, 
-                car: car, 
-                plate: plate, 
-                pass: pass 
-            })
-        });
-        
-        const data = await res.json();
-        
-        if(data.success) {
-            alert("✅ تم تسجيل الكابتن بنجاح!");
-            // تفريغ الخانات بعد النجاح
-            document.getElementById('reg-name').value = '';
-            document.getElementById('reg-phone').value = '';
-            document.getElementById('reg-car').value = '';
-            document.getElementById('reg-plate').value = '';
-            document.getElementById('reg-pass').value = '';
-            refresh(); // تحديث القوائم
-        } else {
-            alert("❌ فشل التسجيل: " + data.error);
-        }
-    } catch(e) {
-        console.error(e);
-        alert("❌ خطأ في الاتصال بالسيرفر");
+            const resD = await fetch(`${API}/drivers`); 
+            const drs = await resD.json();
+            const uDr = document.getElementById('uDr');
+            if(uDr) {
+                uDr.innerHTML = drs.map(d => 
+                    `<option value="${d.driver_name}">${d.driver_name} - ${d.car_type}</option>`
+                ).join('') || '<option disabled>لا يوجد كباتن متوفرين</option>';
+            }
+        } catch(e) { console.error("خطأ في جلب البيانات:", e); }
     }
-}
 
-    // إضافة وجهة
+    // 4. دالة تأكيد الطلب للمستخدم (الزر الذي لا يعمل عندك)
+    async function sendTrip() {
+        const name = document.getElementById('uName').value;
+        const phone = document.getElementById('uPhone').value;
+        const loc = document.getElementById('uLoc').value;
+        const driver = document.getElementById('uDr').value;
+
+        if(!name || !phone) return alert("⚠️ يرجى إدخال الاسم ورقم الهاتف");
+
+        try {
+            const res = await fetch(`${API}/trips`, { // تأكد من وجود مسار /api/trips في السيرفر
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, phone, loc, driver })
+            });
+            alert("✅ تم إرسال طلبك بنجاح! انتظر اتصال الكابتن.");
+        } catch(e) { alert("❌ فشل إرسال الطلب، تأكد من اتصال الإنترنت"); }
+    }
+
+    // 5. دالة تسجيل دخول السائق (الزر الآخر الذي لا يعمل)
+    async function loginDr() {
+        const phone = document.getElementById('drPhone').value;
+        const pass = document.getElementById('drPass').value;
+
+        if (!phone || !pass) return alert("⚠️ أدخل رقم الهاتف وكلمة المرور");
+
+        try {
+            const res = await fetch(`${API}/drivers`);
+            const drivers = await res.json();
+            const driver = drivers.find(d => d.phone === phone && d.password === pass);
+
+            if (driver) {
+                document.getElementById('dr-login-box').style.display = 'none';
+                document.getElementById('dr-dash').style.display = 'block';
+                document.getElementById('dr-hi').innerText = `أهلاً بك كابتن: ${driver.driver_name}`;
+            } else {
+                alert("❌ بيانات الدخول غير صحيحة");
+            }
+        } catch (e) { alert("❌ خطأ في التحقق من البيانات"); }
+    }
+
+    // 6. تسجيل سائق جديد (الإدارة)
+    async function registerDriver() {
+        const name = document.getElementById('reg-name').value;
+        const phone = document.getElementById('reg-phone').value;
+        const car = document.getElementById('reg-car').value;
+        const plate = document.getElementById('reg-plate').value;
+        const pass = document.getElementById('reg-pass').value;
+
+        if(!name || !phone || !pass) return alert("⚠️ املأ الحقول الأساسية");
+
+        try {
+            await fetch(`${API}/drivers`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, phone, car, plate, pass })
+            });
+            alert("✅ تم تسجيل السائق");
+            refresh();
+        } catch(e) { alert("❌ فشل التسجيل"); }
+    }
+
+    // 7. إضافة وجهة جديدة (الإدارة)
     async function addLocation() {
         const name = document.getElementById('loc-name').value;
         const type = document.getElementById('adm-loc-type').value;
         const price = document.getElementById('loc-price').value;
 
-        if(!name || !price) return alert("املأ البيانات");
+        if(!name || !price) return alert("⚠️ املأ بيانات الوجهة");
 
         try {
             await fetch(`${API}/locations`, {
@@ -188,41 +204,12 @@ async function registerDriver() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name, type, price })
             });
-            alert("✅ تمت الإضافة");
+            alert("✅ تمت إضافة الوجهة");
             refresh();
-        } catch(e) { alert("❌ خطأ"); }
+        } catch(e) { alert("❌ فشل الإضافة"); }
     }
-// دالة تسجيل دخول السائق
-async function loginDr() {
-    const phone = document.getElementById('drPhone').value;
-    const pass = document.getElementById('drPass').value;
 
-    if (!phone || !pass) return alert("⚠️ يرجى إدخال رقم الهاتف وكلمة المرور");
-
-    try {
-        // جلب قائمة السائقين من السيرفر للتحقق
-        const res = await fetch(`${API}/drivers`);
-        const drivers = await res.json();
-        
-        // البحث عن السائق الذي يطابق الهاتف وكلمة المرور
-        const driver = drivers.find(d => d.phone === phone && d.password === pass);
-
-        if (driver) {
-            // إخفاء صندوق الدخول وإظهار لوحة التحكم
-            document.getElementById('dr-login-box').style.display = 'none';
-            document.getElementById('dr-dash').style.display = 'block';
-            document.getElementById('dr-hi').innerText = `أهلاً بك كابتن: ${driver.driver_name}`;
-            
-            // هنا يمكنك إضافة دالة لجلب الطلبات الخاصة بالسائق مستقبلاً
-            alert("✅ تم تسجيل الدخول بنجاح");
-        } else {
-            alert("❌ بيانات الدخول غير صحيحة، تأكد من الرقم وكلمة المرور");
-        }
-    } catch (e) {
-        console.error("Login Error:", e);
-        alert("❌ فشل الاتصال بالسيرفر للتحقق من البيانات");
-    }
-}
+    // تشغيل التحديث التلقائي عند فتح الصفحة
     refresh();
 </script>
 </body>
