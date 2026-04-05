@@ -3,236 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TX&M Msallata - الرادار الذكي</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>تاكسي مسلاتة - النظام الذكي</title>
     <style>
-        :root { --taxi-gold: #facc15; --dark-bg: #0f172a; --card-bg: #1e293b; --text-main: #f8fafc; --success: #22c55e; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--dark-bg); color: var(--text-main); margin: 0; padding-bottom: 90px; overflow-x: hidden; }
-        .header { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 15px; background: var(--card-bg); border-bottom: 3px solid var(--taxi-gold); position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        .header h1 { margin: 0; font-size: 20px; color: var(--taxi-gold); letter-spacing: 1px; }
-        .container { padding: 15px; max-width: 500px; margin: auto; }
-        .page { display: none; }
-        .active-page { display: block; animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .card { background: var(--card-bg); padding: 20px; border-radius: 18px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
-        h3 { color: var(--taxi-gold); font-size: 18px; margin-top: 0; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px; margin-bottom: 20px; }
-        input, select { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #334155; background: #0f172a; color: white; margin-bottom: 15px; box-sizing: border-box; font-size: 15px; outline: none; transition: 0.3s; }
-        .btn-taxi { width: 100%; padding: 15px; background: var(--taxi-gold); border: none; border-radius: 12px; color: #000; font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; }
-        .navbar { position: fixed; bottom: 0; width: 100%; background: var(--card-bg); display: flex; justify-content: space-around; padding: 12px 0; border-top: 2px solid var(--taxi-gold); z-index: 1001; }
-        .navbar button { background: none; border: none; color: #94a3b8; cursor: pointer; text-align: center; flex: 1; }
-        .navbar button.active { color: var(--taxi-gold); }
+        :root { --primary: #ffcc00; --dark: #1a1a1a; --gray: #f4f4f4; }
+        body { font-family: 'Arial', sans-serif; margin: 0; background: var(--gray); }
+        .page { display: none; padding: 20px; max-width: 600px; margin: auto; }
+        .active-page { display: block; }
+        
+        /* شاشة الترحيب */
+        .welcome-card { text-align: center; background: white; padding: 40px 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin-top: 50px; }
+        .btn-main { width: 100%; padding: 15px; margin: 10px 0; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-user { background: var(--primary); color: var(--dark); }
+        .btn-driver { background: #28a745; color: white; }
+        .btn-admin { background: transparent; color: #888; font-size: 14px; }
+
+        /* التصميم العام */
+        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .card { background: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .logout-btn { background: #ff4444; color: white; border: none; padding: 5px 15px; border-radius: 5px; float: left; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <i class="fas fa-taxi" style="color:var(--taxi-gold);"></i>
-    <h1>TX&M MSALLATA</h1>
-</div>
-<audio id="notifSound" src="https://www.soundjay.com/buttons/beep-07a.mp3" preload="auto"></audio>
-<div class="container">
-    <div id="user-page" class="page active-page">
-        <div class="card">
-            <h3><i class="fas fa-map-marker-alt"></i> اطلب رحلتك الآن</h3>
-            <input type="text" id="uName" placeholder="اسمك الكريم">
-            <input type="tel" id="uPhone" placeholder="رقم الهاتف للتواصل">
-            <select id="uType" onchange="loadLocs()">
-                <option value="داخل مسلاتة">داخل مسلاتة 🏠</option>
-                <option value="خارج مسلاتة">خارج مسلاتة 🛣️</option>
-            </select>
-            <select id="uLoc"></select>
-            <select id="uDr"><option>جاري البحث عن سائقين...</option></select>
-            <button class="btn-taxi" onclick="sendTrip()">تأكيد الحجز 🚕</button>
+    <div id="welcome-page" class="page active-page">
+        <div class="welcome-card">
+            <h1 style="font-size: 40px; margin-bottom: 10px;">🚕</h1>
+            <h2>تاكسي مسلاتة</h2>
+            <p>مرحباً بك في تطبيقك المفضل، اختر من أنت:</p>
+            <button class="btn-main btn-user" onclick="enterUser()">أنا راكب (اطلب رحلة) 👤</button>
+            <button class="btn-main btn-driver" onclick="enterDriver()">أنا سائق (دخول) 🏎️</button>
+            <button class="btn-admin" onclick="enterAdmin()">الإدارة ⚙️</button>
         </div>
     </div>
 
+    <div id="user-page" class="page">
+        <button class="logout-btn" onclick="goHome()">خروج</button>
+        <h3>اطلب رحلتك الآن 🚕</h3>
+        <input type="text" id="uName" placeholder="اسمك الكريم">
+        <input type="tel" id="uPhone" placeholder="رقم هاتفك">
+        <select id="uType" onchange="loadLocs()">
+            <option value="داخل مسلاتة">داخل مسلاتة</option>
+            <option value="خارج مسلاتة">خارج مسلاتة</option>
+        </select>
+        <select id="uLoc"></select>
+        <select id="uDr"></select>
+        <button class="btn-main btn-user" onclick="sendTrip()">تأكيد الحجز 🚕</button>
+    </div>
+
     <div id="driver-page" class="page">
-        <div id="dr-login-box" class="card">
-            <h3><i class="fas fa-id-card"></i> دخول السائقين</h3>
-            <input type="tel" id="drPhone" placeholder="رقم الهاتف">
-            <input type="password" id="drPass" placeholder="كلمة المرور">
-           <button class="btn-taxi" onclick="loginDr()">تسجيل الدخول</button>
-        </div>
-        <div id="dr-dash" style="display:none;" class="card">
-            <h3 id="dr-hi">لوحة التحكم</h3>
-            <div id="dr-orders">بانتظار الطلبات...</div>
+        <button class="logout-btn" onclick="goHome()">خروج</button>
+        <h3 id="dr-hi">لوحة تحكم الكابتن</h3>
+        <div id="trips-list">
+            <p style="text-align:center;">جاري تحميل الطلبات...</p>
         </div>
     </div>
 
     <div id="admin-page" class="page">
+        <button class="logout-btn" onclick="goHome()">خروج</button>
+        <h3>لوحة التحكم الشاملة ⚙️</h3>
+        
         <div class="card">
-            <h3><i class="fas fa-user-plus"></i> تسجيل سائق</h3>
-            <input type="text" id="reg-name" placeholder="الاسم الكامل">
-            <input type="tel" id="reg-phone" placeholder="رقم الهاتف">
-            <input type="text" id="reg-car" placeholder="نوع السيارة">
-            <input type="text" id="reg-plate" placeholder="رقم اللوحة">
-            <input type="password" id="reg-pass" placeholder="كلمة المرور">
-            <button class="btn-taxi" onclick="registerDriver()">اعتماد السائق</button>
+            <h4>➕ إضافة سائق جديد</h4>
+            <input id="reg-name" placeholder="اسم السائق">
+            <input id="reg-phone" placeholder="رقم الهاتف">
+            <input id="reg-pass" placeholder="كلمة المرور">
+            <button class="btn-main btn-driver" onclick="registerDriver()">حفظ السائق</button>
         </div>
 
         <div class="card">
-            <h3><i class="fas fa-coins"></i> إضافة وجهة</h3>
-            <input type="text" id="loc-name" placeholder="اسم الوجهة">
-            <select id="adm-loc-type">
-                <option value="داخل مسلاتة">داخل مسلاتة</option>
-                <option value="خارج مسلاتة">خارج مسلاتة</option>
-            </select>
-            <input type="number" id="loc-price" placeholder="السعر">
-            <button class="btn-taxi" onclick="addLocation()">إضافة الوجهة</button>
+            <h4>📍 إضافة وجهة جديدة</h4>
+            <input id="loc-name" placeholder="اسم المنطقة">
+            <input id="loc-price" placeholder="السعر">
+            <button class="btn-main btn-user" onclick="addLocation()">إضافة الوجهة</button>
         </div>
     </div>
-</div>
 
-<nav class="navbar">
-    <button onclick="navTo('user')" id="btn-user" class="active"><i class="fas fa-home"></i><span>الرئيسية</span></button>
-    <button onclick="navTo('driver')" id="btn-driver"><i class="fas fa-car-side"></i><span>السائق</span></button>
-    <button onclick="navTo('admin')" id="btn-admin"><i class="fas fa-user-shield"></i><span>الإدارة</span></button>
-</nav>
+    <audio id="notifSound" src="https://www.soundjay.com/buttons/beep-07a.mp3" preload="auto"></audio>
 
-<script>
-    const API = 'https://txm-taxi.onrender.com/api';
-    let locsData = [];
+    <script>
+        const API = 'https://txm-taxi.onrender.com/api';
+        let locsData = [];
+        let lastTripsCount = 0;
 
-    // 1. التنقل بين الصفحات
-    function navTo(pageId) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-        document.getElementById(pageId + '-page').classList.add('active-page');
-        document.querySelectorAll('.navbar button').forEach(b => b.classList.remove('active'));
-        document.getElementById('btn-' + pageId).classList.add('active');
-    }
+        // --- وظائف التنقل والصلاحيات ---
+        function goHome() { 
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+            document.getElementById('welcome-page').classList.add('active-page');
+        }
 
-    // 2. تحميل الوجهات بناءً على النوع (داخل/خارج مسلاتة)
-    function loadLocs() {
-        const type = document.getElementById('uType').value;
-        const filtered = locsData.filter(l => l.location_type === type);
-        document.getElementById('uLoc').innerHTML = filtered.map(l => 
-            `<option value="${l.location_name}">${l.location_name} (${l.price} د.ل)</option>`
-        ).join('') || '<option>لا توجد وجهات مضافة</option>';
-    }
+        function enterUser() {
+            document.getElementById('welcome-page').classList.remove('active-page');
+            document.getElementById('user-page').classList.add('active-page');
+            refresh();
+        }
 
-    // 3. تحديث البيانات (الوجهات والسائقين) عند فتح التطبيق
- let lastTripsCount = 0; // متغير لمراقبة عدد الطلبات
-
-    async function refresh() {
-        try {
-            // 1. جلب الوجهات
-            const resL = await fetch(`${API}/locations`);
-            locsData = await resL.json();
-            loadLocs();
-
-            // 2. جلب السائقين
-            const resD = await fetch(`${API}/drivers`); 
-            const drs = await resD.json();
-            updateDriversList(drs);
-
-            // 3. جلب الطلبات (للسائق) وتنبيهه بالصوت
-            const resT = await fetch(`${API}/trips`);
-            const trips = await resT.json();
+        async function enterDriver() {
+            const phone = prompt("أدخل رقم هاتفك المسجل:");
+            const pass = prompt("أدخل كلمة المرور:");
             
-            // إذا زاد عدد الطلبات عن المرة السابقة، شغل الصوت!
-            if (trips.length > lastTripsCount) {
-                if (lastTripsCount !== 0) { // لكي لا يرن عند أول تحميل للصفحة
+            try {
+                const res = await fetch(`${API}/drivers`);
+                const drivers = await res.json();
+                const driver = drivers.find(d => d.phone === phone && d.password === pass);
+
+                if (driver) {
+                    document.getElementById('welcome-page').classList.remove('active-page');
+                    document.getElementById('driver-page').classList.add('active-page');
+                    document.getElementById('dr-hi').innerText = `أهلاً كابتن ${driver.driver_name}`;
+                    refresh();
+                } else { alert("❌ بيانات غير صحيحة!"); }
+            } catch(e) { alert("❌ فشل الاتصال بالسيرفر"); }
+        }
+
+        function enterAdmin() {
+            const masterPass = "msallata2026"; // كلمة السر الخاصة بك
+            const entry = prompt("أدخل كلمة سر الإدارة:");
+            if (entry === masterPass) {
+                document.getElementById('welcome-page').classList.remove('active-page');
+                document.getElementById('admin-page').classList.add('active-page');
+                refresh();
+            } else { alert("⚠️ غير مصرح لك!"); }
+        }
+
+        // --- وظائف البيانات ---
+        async function refresh() {
+            try {
+                // جلب الوجهات والسائقين للراكب
+                const resL = await fetch(`${API}/locations`);
+                locsData = await resL.json();
+                loadLocs();
+
+                const resD = await fetch(`${API}/drivers`);
+                const drs = await resD.json();
+                document.getElementById('uDr').innerHTML = drs.map(d => `<option value="${d.driver_name}">${d.driver_name} (${d.car_type})</option>`).join('');
+
+                // جلب الطلبات للسائق
+                const resT = await fetch(`${API}/trips`);
+                const trips = await resT.json();
+                displayTrips(trips);
+
+                if (trips.length > lastTripsCount && lastTripsCount !== 0) {
                     document.getElementById('notifSound').play();
                 }
                 lastTripsCount = trips.length;
-                displayTrips(trips); // دالة لعرض الطلبات في لوحة السائق
-            }
-        } catch(e) { console.error("Refresh Error:", e); }
-    }
+            } catch(e) {}
+        }
 
-    // تشغيل التحديث التلقائي كل 10 ثوانٍ
-    setInterval(refresh, 10000);
+        function loadLocs() {
+            const type = document.getElementById('uType').value;
+            const filtered = locsData.filter(l => l.location_type === type);
+            document.getElementById('uLoc').innerHTML = filtered.map(l => `<option value="${l.location_name}">${l.location_name} (${l.price} د.ل)</option>`).join('');
+        }
 
-    // 4. دالة تأكيد الطلب للمستخدم (الزر الذي لا يعمل عندك)
-    async function sendTrip() {
-        const name = document.getElementById('uName').value;
-        const phone = document.getElementById('uPhone').value;
-        const loc = document.getElementById('uLoc').value;
-        const driver = document.getElementById('uDr').value;
-
-        if(!name || !phone) return alert("⚠️ يرجى إدخال الاسم ورقم الهاتف");
-
-        try {
-            const res = await fetch(`${API}/trips`, { // تأكد من وجود مسار /api/trips في السيرفر
+        async function sendTrip() {
+            const name = document.getElementById('uName').value;
+            const phone = document.getElementById('uPhone').value;
+            const loc = document.getElementById('uLoc').value;
+            const driver = document.getElementById('uDr').value;
+            if(!name || !phone) return alert("⚠️ املأ بياناتك");
+            await fetch(`${API}/trips`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ name, phone, loc, driver })
             });
-            alert("✅ تم إرسال طلبك بنجاح! انتظر اتصال الكابتن.");
-        } catch(e) { alert("❌ فشل إرسال الطلب، تأكد من اتصال الإنترنت"); }
-    }
+            alert("✅ تم الطلب بنجاح!");
+        }
 
-    // 5. دالة تسجيل دخول السائق (الزر الآخر الذي لا يعمل)
-    async function loginDr() {
-        const phone = document.getElementById('drPhone').value;
-        const pass = document.getElementById('drPass').value;
+        function displayTrips(trips) {
+            const list = document.getElementById('trips-list');
+            if(!list) return;
+            list.innerHTML = trips.map(t => `
+                <div class="card" style="border-right: 5px solid gold;">
+                    <p>👤 <b>الراكب:</b> ${t.passenger_name}</p>
+                    <p>📞 <b>هاتف:</b> <a href="tel:${t.phone}">${t.phone}</a></p>
+                    <p>📍 <b>الوجهة:</b> ${t.pickup_point}</p>
+                </div>
+            `).join('') || '<p style="text-align:center;">لا توجد طلبات</p>';
+        }
 
-        if (!phone || !pass) return alert("⚠️ أدخل رقم الهاتف وكلمة المرور");
-
-        try {
-            const res = await fetch(`${API}/drivers`);
-            const drivers = await res.json();
-            const driver = drivers.find(d => d.phone === phone && d.password === pass);
-
-            if (driver) {
-                document.getElementById('dr-login-box').style.display = 'none';
-                document.getElementById('dr-dash').style.display = 'block';
-                document.getElementById('dr-hi').innerText = `أهلاً بك كابتن: ${driver.driver_name}`;
-            } else {
-                alert("❌ بيانات الدخول غير صحيحة");
-            }
-        } catch (e) { alert("❌ خطأ في التحقق من البيانات"); }
-    }
-
-    // 6. تسجيل سائق جديد (الإدارة)
-    async function registerDriver() {
-        const name = document.getElementById('reg-name').value;
-        const phone = document.getElementById('reg-phone').value;
-        const car = document.getElementById('reg-car').value;
-        const plate = document.getElementById('reg-plate').value;
-        const pass = document.getElementById('reg-pass').value;
-
-        if(!name || !phone || !pass) return alert("⚠️ املأ الحقول الأساسية");
-
-        try {
+        async function registerDriver() {
+            const name = document.getElementById('reg-name').value;
+            const phone = document.getElementById('reg-phone').value;
+            const pass = document.getElementById('reg-pass').value;
             await fetch(`${API}/drivers`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, phone, car, plate, pass })
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ name, phone, pass, car: "تويوتا", plate: "000" })
             });
-            alert("✅ تم تسجيل السائق");
-            refresh();
-        } catch(e) { alert("❌ فشل التسجيل"); }
-    }
+            alert("✅ تم التسجيل");
+        }
 
-    // 7. إضافة وجهة جديدة (الإدارة)
-    async function addLocation() {
-        const name = document.getElementById('loc-name').value;
-        const type = document.getElementById('adm-loc-type').value;
-        const price = document.getElementById('loc-price').value;
-
-        if(!name || !price) return alert("⚠️ املأ بيانات الوجهة");
-
-        try {
-            await fetch(`${API}/locations`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, type, price })
-            });
-            alert("✅ تمت إضافة الوجهة");
-            refresh();
-        } catch(e) { alert("❌ فشل الإضافة"); }
-    }
-
-    // تشغيل التحديث عند فتح الصفحة لأول مرة
-    refresh();
-
-    // التحديث التلقائي كل 10 ثوانٍ (10000 ميلي ثانية)
-    setInterval(() => {
-        refresh();
-        console.log("🔄 تم تحديث البيانات تلقائياً");
-    }, 10000);
-    
-</script>
+        setInterval(refresh, 10000);
+    </script>
 </body>
 </html>
