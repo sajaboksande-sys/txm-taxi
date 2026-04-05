@@ -111,20 +111,24 @@
     }
 
     // تحديث البيانات
-    async function refresh() {
-        try {
-            const resL = await fetch(`${API}/locations`);
-            locsData = await resL.json();
-            loadLocs();
+   async function refresh() {
+    try {
+        // جلب الوجهات
+        const resL = await fetch(`${API}/locations`);
+        locsData = await resL.json();
+        loadLocs();
 
-            // جلب السائقين (نفترض وجود مسار جلب السائقين)
-            const resD = await fetch(`${API}/drivers`); 
-            const drs = await resD.json();
-            document.getElementById('uDr').innerHTML = drs.map(d => 
+        // جلب السائقين
+        const resD = await fetch(`${API}/drivers`); 
+        const drs = await resD.json();
+        const uDr = document.getElementById('uDr');
+        if(uDr) {
+            uDr.innerHTML = drs.map(d => 
                 `<option value="${d.driver_name}">${d.driver_name} - ${d.car_type}</option>`
-            ).join('') || '<option>لا يوجد سائقين مسجلين</option>';
-        } catch(e) { console.error("Refresh Error:", e); }
-    }
+            ).join('') || '<option disabled>لا يوجد سائقين مسجلين</option>';
+        }
+    } catch(e) { console.error("Error refreshing data:", e); }
+}
 
 // تسجيل سائق جديد (من صفحة الإدارة)
 async function registerDriver() {
