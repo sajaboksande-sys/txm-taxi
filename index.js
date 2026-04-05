@@ -15,12 +15,14 @@ const __dirname = dirname(__filename);
 
 // --- إعدادات الاتصال بـ Aiven Cloud ---
 const dbConfig = {
-    host: 'mysql-28d492e5-sajaboksande-bbbb.a.aivencloud.com', // تأكد من الرابط الصحيح
-    user: 'avnadmin', 
-    password: 'YOUR_PASSWORD_HERE', // ضع كلمتك السرية هنا
-    database: 'defaultdb',
-    port: 24734,
-    ssl: { rejectUnauthorized: false }
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    port: process.env.DB_PORT,
+    database: process.env.DB_NAME,
+    ssl: { 
+        rejectUnauthorized: false // ضروري جداً لأن Aiven تطلب SSL
+    }
 };
 
 // دالة تنفيذ الاستعلامات
