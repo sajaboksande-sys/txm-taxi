@@ -23,9 +23,12 @@ const dbConfig = {
     ssl: { 
         rejectUnauthorized: false 
     },
+    // أضف هذا السطر لحل مشكلة الـ offset والـ SHA256
+    authPlugins: {
+        mysql_native_password: () => () => Buffer.from(process.env.DB_PASSWORD)
+    },
     connectTimeout: 10000
 };
-
 // دالة تنفيذ الاستعلامات
 async function executeQuery(sql, params = []) {
     const connection = await mysql.createConnection(dbConfig);
