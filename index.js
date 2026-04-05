@@ -6,6 +6,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// إعدادات الاتصال بقاعدة البيانات
 const dbConfig = {
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
@@ -13,23 +14,29 @@ const dbConfig = {
     port: process.env.DB_PORT,
     database: process.env.DB_NAME,
     ssl: { rejectUnauthorized: false },
-    connectTimeout: 10000
+    // هذا السطر مهم جداً لتجنب خطأ الـ offset مع Aiven
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 };
+
+// استخدام Pool بدلاً من Connection مفرد لزيادة الاستقرار
+const pool = mysql.createPool(dbConfig);
 
 // دالة تنفيذ الاستعلامات
 async function executeQuery(sql, params = []) {
-    const connection = await mysql.createConnection(dbConfig);
     try {
-        const [results] = await connection.execute(sql, params);
+        const [results] = await pool.execute(sql, params);
         return results;
-    } finally {
-        await connection.end();
+    } catch (err) {
+        console.error("Database Error:", err);
+        throw err;
     }
 }
 
 // --- المسارات (Routes) ---
 
-// 1. اختبار السيرفر
+// 1. الصفحة الرئيسية لاختبار السيرفر
 app.get('/', (req, res) => {
     res.send('🚀 السيرفر يعمل بنجاح! جرب الوصول إلى /api/locations');
 });
@@ -44,18 +51,20 @@ app.get('/api/locations', async (req, res) => {
     }
 });
 
-// 3. إضافة وجهة
+// 3. إضافة وجهة جديدة
 app.post('/api/locations', async (req, res) => {
     try {
         const { name, type, price } = req.body;
-        await executeQuery("INSERT INTO locations (location_name, location_type, price) VALUES (?, ?, ?)", [name, type, price]);
+        // ملاحظة: تأكد أن أسماء الأعمدة في الجدول تطابق ما هنا (location_name, location_type, price)
+        const sql = "INSERT INTO locations (location_name, location_type, price) VALUES (?, ?, ?)";
+        await executeQuery(sql, [name, type, price]);
         res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
 
-// 4. إضافة سائق
+// 4. إضافة سائق جديد
 app.post('/api/drivers', async (req, res) => {
     try {
         const { name, phone, car, plate, pass } = req.body;
@@ -67,7 +76,8 @@ app.post('/api/drivers', async (req, res) => {
     }
 });
 
+// تشغيل السيرفر
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
 });
