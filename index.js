@@ -6,22 +6,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// --- الحل الجذري: الاتصال عبر رابط الـ URI مباشرة ---
-// تأكد من إضافة DATABASE_URL في متغيرات البيئة بـ Render
-// القيمة ستكون: mysql://avnadmin:كلمة-المرور@mysql-28d492e5-sajaboksande-bbbb.a.aivencloud.com:21439/defaultdb?ssl-mode=REQUIRED
+// الاتصال باستخدام الرابط المباشر DATABASE_URL
+const pool = mysql.createPool(process.env.DATABASE_URL);
 
-const dbConfig = process.env.DATABASE_URL || {
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    port: process.env.DB_PORT,
-    database: process.env.DB_NAME,
-    ssl: { rejectUnauthorized: false }
-};
-
-const pool = mysql.createPool(dbConfig);
-
-// دالة تنفيذ الاستعلامات
 async function executeQuery(sql, params = []) {
     let connection;
     try {
@@ -36,11 +23,7 @@ async function executeQuery(sql, params = []) {
     }
 }
 
-// --- المسارات (Routes) ---
-
-app.get('/', (req, res) => {
-    res.send('🚀 السيرفر يعمل بنجاح!');
-});
+app.get('/', (req, res) => res.send('🚀 السيرفر متصل بنجاح عبر URI!'));
 
 app.get('/api/locations', async (req, res) => {
     try {
@@ -51,9 +34,7 @@ app.get('/api/locations', async (req, res) => {
     }
 });
 
-// (بقية المسارات كما هي في كودك السابق...)
+// أضف بقية المسارات (POST /api/locations و POST /api/drivers) هنا بنفس الطريقة
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on port ${PORT}`);
-});
+app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));
