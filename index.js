@@ -74,10 +74,11 @@ app.post('/api/drivers', async (req, res) => {
     }
 });
 
-// 5. جلب السائقين (لاختيارهم في صفحة الطلب)
+// 5. جلب السائقين (للتحقق من الدخول واختيارهم في الطلب)
 app.get('/api/drivers', async (req, res) => {
     try {
-        const results = await executeQuery("SELECT driver_name, car_type FROM drivers");
+        // نستخدم * لجلب الهاتف وكلمة المرور من أجل دالة loginDr
+        const results = await executeQuery("SELECT * FROM drivers");
         res.json(results || []);
     } catch (err) {
         res.status(500).json({ error: err.message });
