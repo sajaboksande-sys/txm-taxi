@@ -17,7 +17,28 @@ if (!databaseUrl) {
 }
 
 const pool = mysql.createPool(databaseUrl);
+// دالة لإنشاء الجدول تلقائياً إذا لم يكن موجوداً
+async function createTable() {
+    const sql = `
+    CREATE TABLE IF NOT EXISTS trips (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        passenger_name VARCHAR(100),
+        phone VARCHAR(20),
+        pickup_point VARCHAR(100),
+        driver_name VARCHAR(100),
+        status ENUM('pending', 'accepted', 'completed') DEFAULT 'pending',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );`;
+    try {
+        await pool.query(sql);
+        console.log("✅ جدول الرحلات (trips) جاهز للعمل!");
+    } catch (err) {
+        console.error("❌ فشل إنشاء الجدول:", err.message);
+    }
+}
 
+// تنفيذ الإنشاء عند تشغيل السيرفر
+createTable();
 // دالة تنفيذ الاستعلامات مع معالجة الأخطاء
 async function executeQuery(sql, params = []) {
     let connection;
