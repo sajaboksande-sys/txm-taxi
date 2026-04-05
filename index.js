@@ -105,6 +105,9 @@ app.get('/api/locations', async (req, res) => {
 
 // --- تشغيل السيرفر ---
 const PORT = process.env.PORT || 3000;
+app.get('/', (req, res) => {
+    res.send('🚀 السيرفر يعمل بنجاح! الرابط المخصص للبيانات هو /api');
+});
 app.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
