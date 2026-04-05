@@ -29,7 +29,7 @@
     <i class="fas fa-taxi" style="color:var(--taxi-gold);"></i>
     <h1>TX&M MSALLATA</h1>
 </div>
-
+<audio id="notifSound" src="https://www.soundjay.com/buttons/beep-07a.mp3" preload="auto"></audio>
 <div class="container">
     <div id="user-page" class="page active-page">
         <div class="card">
@@ -111,22 +111,37 @@
     }
 
     // 3. تحديث البيانات (الوجهات والسائقين) عند فتح التطبيق
+ let lastTripsCount = 0; // متغير لمراقبة عدد الطلبات
+
     async function refresh() {
         try {
+            // 1. جلب الوجهات
             const resL = await fetch(`${API}/locations`);
             locsData = await resL.json();
             loadLocs();
 
+            // 2. جلب السائقين
             const resD = await fetch(`${API}/drivers`); 
             const drs = await resD.json();
-            const uDr = document.getElementById('uDr');
-            if(uDr) {
-                uDr.innerHTML = drs.map(d => 
-                    `<option value="${d.driver_name}">${d.driver_name} - ${d.car_type}</option>`
-                ).join('') || '<option disabled>لا يوجد كباتن متوفرين</option>';
+            updateDriversList(drs);
+
+            // 3. جلب الطلبات (للسائق) وتنبيهه بالصوت
+            const resT = await fetch(`${API}/trips`);
+            const trips = await resT.json();
+            
+            // إذا زاد عدد الطلبات عن المرة السابقة، شغل الصوت!
+            if (trips.length > lastTripsCount) {
+                if (lastTripsCount !== 0) { // لكي لا يرن عند أول تحميل للصفحة
+                    document.getElementById('notifSound').play();
+                }
+                lastTripsCount = trips.length;
+                displayTrips(trips); // دالة لعرض الطلبات في لوحة السائق
             }
-        } catch(e) { console.error("خطأ في جلب البيانات:", e); }
+        } catch(e) { console.error("Refresh Error:", e); }
     }
+
+    // تشغيل التحديث التلقائي كل 10 ثوانٍ
+    setInterval(refresh, 10000);
 
     // 4. دالة تأكيد الطلب للمستخدم (الزر الذي لا يعمل عندك)
     async function sendTrip() {
