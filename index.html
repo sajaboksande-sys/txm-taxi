@@ -126,29 +126,49 @@
         } catch(e) { console.error("Refresh Error:", e); }
     }
 
-    // تسجيل سائق جديد
-    async function registerDriver() {
-        const name = document.getElementById('reg-name').value;
-        const phone = document.getElementById('reg-phone').value;
-        const car = document.getElementById('reg-car').value;
-        const plate = document.getElementById('reg-plate').value;
-        const pass = document.getElementById('reg-pass').value;
+// تسجيل سائق جديد (من صفحة الإدارة)
+async function registerDriver() {
+    // جلب القيم من الخانات (تأكد أن الـ id في HTML هو reg-name و reg-phone... إلخ)
+    const name = document.getElementById('reg-name').value;
+    const phone = document.getElementById('reg-phone').value;
+    const car = document.getElementById('reg-car').value;
+    const plate = document.getElementById('reg-plate').value;
+    const pass = document.getElementById('reg-pass').value;
 
-        if(!name || !phone || !pass) return alert("يرجى ملء البيانات");
+    if(!name || !phone || !pass) return alert("⚠️ يرجى ملء البيانات الأساسية (الاسم، الهاتف، كلمة المرور)");
 
-        try {
-            const res = await fetch(`${API}/drivers`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, phone, car, plate, pass })
-            });
-            const data = await res.json();
-            if(data.success) {
-                alert("✅ تم التسجيل!");
-                refresh();
-            } else { alert("❌ " + data.error); }
-        } catch(e) { alert("❌ خطأ في الاتصال"); }
+    try {
+        const res = await fetch(`${API}/drivers`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                name: name, 
+                phone: phone, 
+                car: car, 
+                plate: plate, 
+                pass: pass 
+            })
+        });
+        
+        const data = await res.json();
+        
+        if(data.success) {
+            alert("✅ تم تسجيل الكابتن بنجاح!");
+            // تفريغ الخانات بعد النجاح
+            document.getElementById('reg-name').value = '';
+            document.getElementById('reg-phone').value = '';
+            document.getElementById('reg-car').value = '';
+            document.getElementById('reg-plate').value = '';
+            document.getElementById('reg-pass').value = '';
+            refresh(); // تحديث القوائم
+        } else {
+            alert("❌ فشل التسجيل: " + data.error);
+        }
+    } catch(e) {
+        console.error(e);
+        alert("❌ خطأ في الاتصال بالسيرفر");
     }
+}
 
     // إضافة وجهة
     async function addLocation() {
