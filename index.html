@@ -192,7 +192,37 @@ async function registerDriver() {
             refresh();
         } catch(e) { alert("❌ خطأ"); }
     }
+// دالة تسجيل دخول السائق
+async function loginDr() {
+    const phone = document.getElementById('drPhone').value;
+    const pass = document.getElementById('drPass').value;
 
+    if (!phone || !pass) return alert("⚠️ يرجى إدخال رقم الهاتف وكلمة المرور");
+
+    try {
+        // جلب قائمة السائقين من السيرفر للتحقق
+        const res = await fetch(`${API}/drivers`);
+        const drivers = await res.json();
+        
+        // البحث عن السائق الذي يطابق الهاتف وكلمة المرور
+        const driver = drivers.find(d => d.phone === phone && d.password === pass);
+
+        if (driver) {
+            // إخفاء صندوق الدخول وإظهار لوحة التحكم
+            document.getElementById('dr-login-box').style.display = 'none';
+            document.getElementById('dr-dash').style.display = 'block';
+            document.getElementById('dr-hi').innerText = `أهلاً بك كابتن: ${driver.driver_name}`;
+            
+            // هنا يمكنك إضافة دالة لجلب الطلبات الخاصة بالسائق مستقبلاً
+            alert("✅ تم تسجيل الدخول بنجاح");
+        } else {
+            alert("❌ بيانات الدخول غير صحيحة، تأكد من الرقم وكلمة المرور");
+        }
+    } catch (e) {
+        console.error("Login Error:", e);
+        alert("❌ فشل الاتصال بالسيرفر للتحقق من البيانات");
+    }
+}
     refresh();
 </script>
 </body>
