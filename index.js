@@ -13,11 +13,13 @@ const dbConfig = {
     password: process.env.DB_PASSWORD,
     port: process.env.DB_PORT,
     database: process.env.DB_NAME,
-    ssl: { rejectUnauthorized: false },
-    // هذا السطر مهم جداً لتجنب خطأ الـ offset مع Aiven
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
+    ssl: { 
+        rejectUnauthorized: false 
+    },
+    // الحل السحري: إجبار المكتبة على استخدام التشفير التقليدي المتوافق مع Node.js
+    authPlugins: {
+        mysql_native_password: () => () => Buffer.from(process.env.DB_PASSWORD)
+    }
 };
 
 // استخدام Pool بدلاً من Connection مفرد لزيادة الاستقرار
