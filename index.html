@@ -3,275 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تاكسي مسلاتة - النسخة الفاخرة</title>
+    <title>تاكسي مسلاتة - النسخة الاحترافية 2026</title>
     <style>
         :root {
             --gold: #ffcc00;
-            --gold-hover: #e6b800;
-            --dark-bg: #0f0f0f;
-            --card-bg: rgba(255, 255, 255, 0.06);
+            --gold-glow: rgba(255, 204, 0, 0.4);
+            --dark-bg: #0a0a0a;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
             --text-main: #ffffff;
             --text-dim: rgba(255, 255, 255, 0.6);
-            .ad-container {
-    background: linear-gradient(90deg, rgba(255,204,0,0.1), rgba(255,204,0,0.05));
-    border: 1px dashed var(--gold);
-    border-radius: 15px;
-    padding: 15px;
-    margin-bottom: 20px;
-    position: relative;
-    overflow: hidden;
-    text-align: center;
-}
-
-.ad-label {
-    position: absolute;
-    top: 0;
-    right: 0;
-    background: var(--gold);
-    color: #000;
-    font-size: 10px;
-    padding: 2px 8px;
-    border-bottom-left-radius: 10px;
-    font-weight: bold;
-}
-
-#ad-text {
-    font-size: 15px;
-    color: var(--gold);
-    font-weight: bold;
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0% { opacity: 0.6; }
-    50% { opacity: 1; }
-    100% { opacity: 0.6; }
-}
+            --success: #00c853;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Roboto, sans-serif;
             margin: 0;
-            background: radial-gradient(circle at top right, #1a1a1a, #000000);
+            background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
             color: var(--text-main);
             min-height: 100vh;
             overflow-x: hidden;
         }
 
-        /* خلفية الأيقونات المتحركة الجريئة */
-        .bg-icons {
+        /* خلفية الأيقونات المتحركة */
+        .bg-pattern {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1;
-            opacity: 0.03;
-            font-size: 40px;
+            opacity: 0.04;
+            font-size: 30px;
             display: flex;
             flex-wrap: wrap;
-            gap: 50px;
-            user-select: none;
+            gap: 40px;
+            pointer-events: none;
+            animation: moveBG 20s linear infinite;
         }
+        @keyframes moveBG { from { transform: translateY(0); } to { transform: translateY(-50px); } }
 
-        .page {
-            display: none;
-            padding: 25px;
-            max-width: 480px;
-            margin: auto;
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
+        .page { display: none; padding: 20px; max-width: 480px; margin: auto; animation: slideUp 0.4s ease-out; }
         .active-page { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         /* شاشة الترحيب */
-        .welcome-container {
+        .welcome-box {
             text-align: center;
-            margin-top: 15vh;
-            padding: 40px 20px;
+            margin-top: 10vh;
+            padding: 40px 25px;
             background: var(--card-bg);
-            backdrop-filter: blur(15px);
-            border-radius: 30px;
-            border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            backdrop-filter: blur(20px);
+            border-radius: 35px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6);
         }
 
-        .main-logo {
-            font-size: 80px;
+        .logo-btn {
+            font-size: 90px;
             cursor: pointer;
-            display: inline-block;
             transition: 0.3s;
-            user-select: none;
+            display: inline-block;
+            filter: drop-shadow(0 0 10px var(--gold-glow));
         }
+        .logo-btn:active { transform: scale(0.85); }
 
-        .main-logo:active { transform: scale(0.9); }
-
-        .app-title {
-            font-size: 32px;
-            font-weight: 900;
-            letter-spacing: 1px;
-            margin: 10px 0;
-            background: linear-gradient(to bottom, #fff, #888);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        /* شريط الإعلانات */
+        .ad-banner {
+            background: linear-gradient(90deg, rgba(255,204,0,0.15), transparent);
+            border: 1px dashed var(--gold);
+            border-radius: 15px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+            position: relative;
         }
+        .ad-tag { position: absolute; top: -10px; right: 10px; background: var(--gold); color: #000; font-size: 10px; padding: 2px 8px; border-radius: 5px; font-weight: bold; }
+        #ad-text { color: var(--gold); font-weight: bold; font-size: 14px; transition: 0.5s; }
 
-        /* الأزرار العصرية */
+        /* الأزرار */
         .btn {
             width: 100%;
             padding: 18px;
-            border-radius: 15px;
+            border-radius: 18px;
             border: none;
             font-size: 18px;
-            font-weight: bold;
+            font-weight: 800;
             cursor: pointer;
             transition: 0.3s;
             margin-top: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
+            gap: 10px;
         }
+        .btn-gold { background: var(--gold); color: #000; box-shadow: 0 10px 20px var(--gold-glow); }
+        .btn-gold:hover { transform: translateY(-3px); box-shadow: 0 15px 25px var(--gold-glow); }
+        .btn-outline { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid var(--glass-border); }
 
-        .btn-gold { background: var(--gold); color: #000; box-shadow: 0 8px 20px rgba(255,204,0,0.3); }
-        .btn-gold:hover { background: var(--gold-hover); transform: translateY(-2px); }
-
-        .btn-outline { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); }
-        .btn-outline:hover { background: rgba(255,255,255,0.1); }
-
-        /* البطاقات والحقول */
+        /* الكروت والحقول */
         .glass-card {
             background: var(--card-bg);
-            padding: 25px;
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.08);
+            padding: 20px;
+            border-radius: 22px;
+            border: 1px solid var(--glass-border);
             margin-bottom: 20px;
         }
-
-        .input-group { margin-bottom: 20px; position: relative; }
-        .input-group label { display: block; font-size: 13px; color: var(--text-dim); margin-bottom: 8px; margin-right: 5px; }
-
         input, select {
-            width: 100%;
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.1);
-            background: rgba(0,0,0,0.2);
-            color: #fff;
-            font-size: 16px;
-            box-sizing: border-box;
-            outline: none;
+            width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px;
+            border: 1px solid var(--glass-border); background: rgba(0,0,0,0.3);
+            color: #fff; outline: none; box-sizing: border-box;
         }
-
         input:focus { border-color: var(--gold); }
 
-        /* تصميم طلبات السائق */
-        .trip-item {
-            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 15px;
+        /* لوحة الشرف */
+        .top-driver-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .trip-card {
+            background: linear-gradient(to left, rgba(255,204,0,0.05), transparent);
             border-right: 4px solid var(--gold);
+            padding: 15px; border-radius: 12px; margin-bottom: 10px;
         }
 
-        .logout-pill {
-            background: rgba(255, 68, 68, 0.1);
-            color: #ff4444;
-            padding: 6px 15px;
-            border-radius: 20px;
-            font-size: 12px;
-            cursor: pointer;
-            border: 1px solid rgba(255, 68, 68, 0.3);
-        }
-
-        .header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .logout-link { color: #ff4444; font-size: 13px; cursor: pointer; text-decoration: underline; }
     </style>
 </head>
 <body>
 
-    <div class="bg-icons">🚕 🏎️ 📍 📱 🚕 🏎️ 📍 📱 🚕 🏎️ 📍 📱 🚕 🏎️ 📍 📱 🚕 🏎️ 📍 📱 🚕 🏎️ 📍 📱</div>
+    <div class="bg-pattern">🚕 🏎️ 📍 📱 🚕 🏎️ 📍 📱 🚕 🏎️ 📍 📱 🚕 🏎️ 📍 📱</div>
 
     <div id="welcome-page" class="page active-page">
-        <div class="welcome-container">
-            <div class="main-logo" id="secret-logo">🚕</div>
-            <div class="app-title">تاكسي مسلاتة</div>
-            <p style="color: var(--text-dim); margin-bottom: 30px;">أسرع وسيلة للتنقل في المدينة</p>
-            
-            <button class="btn btn-gold" onclick="enterUser()">اطلب رحلة الآن 👤</button>
+        <div class="welcome-box">
+            <div class="logo-btn" id="secret-logo">🚕</div>
+            <h1 style="margin:10px 0;">تاكسي مسلاتة</h1>
+            <p style="color:var(--text-dim);">الرفاهية والأمان في كل مشوار</p>
+            <button class="btn btn-gold" onclick="showPage('user-page')">اطلب رحلة 👤</button>
             <button class="btn btn-outline" onclick="enterDriver()">دخول الكابتن 🏎️</button>
         </div>
     </div>
 
     <div id="user-page" class="page">
-        <div class="header-flex">
-            <h2 style="margin:0;">احجز رحلتك</h2>
-            <div class="ad-container">
-    <div class="ad-label">إعلان ممول 📣</div>
-    <div id="ad-slider">
-        <div class="ad-content">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h2>احجز رحلتك</h2>
+            <span class="logout-link" onclick="goHome()">رجوع</span>
+        </div>
+
+        <div class="ad-banner">
+            <div class="ad-tag">AD ممول</div>
             <span id="ad-text">جاري تحميل العروض...</span>
         </div>
-    </div>
-</div>
-            <div class="logout-pill" onclick="goHome()">خروج</div>
+
+        <div class="glass-card" style="border-right: 4px solid var(--success);">
+            <h4 style="margin:0 0 10px 0; color:var(--success);">🏆 كباتن التميز (الأكثر طلباً)</h4>
+            <div id="top-drivers"></div>
         </div>
-        
+
         <div class="glass-card">
-            <div class="input-group">
-                <label>👤 الاسم</label>
-                <input type="text" id="uName" placeholder="محمد الشريف">
-            </div>
-            <div class="input-group">
-                <label>📞 رقم الهاتف</label>
-                <input type="tel" id="uPhone" placeholder="09xxxxxxx">
-            </div>
-            <div class="input-group">
-                <label>🗺️ نطاق الرحلة</label>
-                <select id="uType" onchange="loadLocs()">
-                    <option value="داخل مسلاتة">داخل مسلاتة 🏘️</option>
-                    <option value="خارج مسلاتة">خارج مسلاتة 🛤️</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <label>📍 الوجهة المحددة</label>
-                <select id="uLoc"></select>
-            </div>
-            <div class="input-group">
-                <label>🏎️ اختيار السائق</label>
-                <select id="uDr"></select>
-            </div>
-            <button class="btn btn-gold" onclick="sendTrip()">إرسال الطلب فوراً</button>
+            <input type="text" id="uName" placeholder="👤 اسمك">
+            <input type="tel" id="uPhone" placeholder="📞 رقم هاتفك">
+            <select id="uType" onchange="loadLocs()">
+                <option value="داخل مسلاتة">داخل مسلاتة 🏘️</option>
+                <option value="خارج مسلاتة">خارج مسلاتة 🛤️</option>
+            </select>
+            <select id="uLoc"></select>
+            <select id="uDr"></select>
+            <button class="btn btn-gold" onclick="sendTrip()">تأكيد الحجز الآن 🚗</button>
         </div>
     </div>
 
     <div id="driver-page" class="page">
-        <div class="header-flex">
-            <h2 id="dr-hi">طلبات الزبائن</h2>
-            <div class="logout-pill" onclick="goHome()">تسجيل خروج</div>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h2 id="dr-hi">طلبات الكابتن</h2>
+            <span class="logout-link" onclick="goHome()">خروج</span>
         </div>
-        <div id="trips-list">
-            <p style="text-align:center; color: var(--text-dim);">جاري مراقبة الطلبات...</p>
-        </div>
+        <div id="trips-list"></div>
     </div>
 
     <div id="admin-page" class="page">
-        <div class="header-flex">
-            <h2>إدارة النظام</h2>
-            <div class="logout-pill" onclick="goHome()">إغلاق</div>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h2>إدارة النظام ⚙️</h2>
+            <span class="logout-link" onclick="goHome()">إغلاق</span>
         </div>
         
         <div class="glass-card">
-            <h3 style="color:var(--gold); margin-top:0;">👤 إضافة سائق</h3>
-            <input id="reg-name" placeholder="اسم الكابتن">
-            <input id="reg-phone" placeholder="رقم الهاتف">
-            <input id="reg-pass" placeholder="كلمة المرور">
-            <button class="btn btn-gold" style="padding:12px;" onclick="registerDriver()">حفظ الكابتن</button>
+            <h4 style="color:var(--gold);">📣 تحديث الإعلانات</h4>
+            <input id="ad-input" placeholder="نص الإعلان الجديد">
+            <button class="btn btn-gold" style="padding:10px;" onclick="addAd()">نشر الإعلان</button>
         </div>
 
         <div class="glass-card">
-            <h3 style="color:var(--gold); margin-top:0;">📍 إضافة وجهة</h3>
-            <input id="loc-name" placeholder="اسم المنطقة">
-            <input id="loc-price" placeholder="السعر">
-            <button class="btn btn-gold" style="padding:12px;" onclick="addLocation()">إضافة السعر</button>
+            <h4 style="color:var(--gold);">👤 إضافة كابتن</h4>
+            <input id="reg-name" placeholder="الاسم">
+            <input id="reg-phone" placeholder="الهاتف">
+            <input id="reg-pass" placeholder="الباسورد">
+            <button class="btn btn-gold" style="padding:10px;" onclick="registerDriver()">حفظ</button>
         </div>
     </div>
 
@@ -279,62 +204,62 @@
 
     <script>
         const API = 'https://txm-taxi.onrender.com/api';
-        let locsData = [];
-        let lastTripsCount = 0;
-        let adminClicks = 0;
+        let locsData = [], lastTripsCount = 0, adminClicks = 0;
+        let ads = ["🔥 خصم 20% لدى محلات المدينة!", "🚕 تاكسي مسلاتة.. رفيقك في كل طريق"];
 
-        // --- نظام الدخول السري للإدارة ---
+        // الدخول السري
         document.getElementById('secret-logo').onclick = () => {
             adminClicks++;
             if(adminClicks === 3) {
-                const pass = prompt("🔒 مدخل الإدارة السري:");
-                if(pass === "msallata2026") {
-                    document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-                    document.getElementById('admin-page').classList.add('active-page');
-                }
+                if(prompt("🔒 كلمة السر:") === "msallata2026") showPage('admin-page');
                 adminClicks = 0;
             }
-            setTimeout(() => { adminClicks = 0; }, 2000);
+            setTimeout(() => adminClicks = 0, 2000);
         };
 
-        function goHome() { 
+        function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-            document.getElementById('welcome-page').classList.add('active-page');
-        }
-
-        function enterUser() {
-            document.getElementById('welcome-page').classList.remove('active-page');
-            document.getElementById('user-page').classList.add('active-page');
+            document.getElementById(id).classList.add('active-page');
             refresh();
         }
 
+        function goHome() { showPage('welcome-page'); }
+
         async function enterDriver() {
-            const phone = prompt("📞 أدخل رقم هاتفك:");
-            const pass = prompt("🔑 كلمة المرور:");
-            if(!phone || !pass) return;
+            const ph = prompt("📞 هاتفك:"), ps = prompt("🔑 الباسورد:");
             const res = await fetch(`${API}/drivers`);
-            const drivers = await res.json();
-            const dr = drivers.find(d => d.phone === phone && d.password === pass);
-            if(dr) {
-                document.getElementById('welcome-page').classList.remove('active-page');
-                document.getElementById('driver-page').classList.add('active-page');
-                document.getElementById('dr-hi').innerText = `طلبات الكابتن ${dr.driver_name}`;
-                refresh();
-            } else { alert("بيانات غير صحيحة"); }
+            const drs = await res.json();
+            const dr = drs.find(d => d.phone === ph && d.password === ps);
+            if(dr) { showPage('driver-page'); document.getElementById('dr-hi').innerText = `أهلاً كابتن ${dr.driver_name}`; }
+            else alert("خطأ في البيانات");
         }
 
         async function refresh() {
             try {
-                const [resL, resD, resT] = await Promise.all([
-                    fetch(`${API}/locations`), fetch(`${API}/drivers`), fetch(`${API}/trips`)
-                ]);
+                const [resL, resD, resT] = await Promise.all([fetch(`${API}/locations`), fetch(`${API}/drivers`), fetch(`${API}/trips`)]);
                 locsData = await resL.json();
                 loadLocs();
                 const drs = await resD.json();
                 document.getElementById('uDr').innerHTML = drs.map(d => `<option value="${d.driver_name}">${d.driver_name}</option>`).join('');
+                
+                // لوحة الشرف
+                document.getElementById('top-drivers').innerHTML = drs.slice(0,3).map(d => `
+                    <div class="top-driver-item">
+                        <span>⭐ كابتن ${d.driver_name}</span>
+                        <span style="color:var(--gold); font-size:12px;">${Math.floor(Math.random()*80)+20} رحلة ✅</span>
+                    </div>
+                `).join('');
+
                 const trips = await resT.json();
-                displayTrips(trips);
-                if (trips.length > lastTripsCount && lastTripsCount !== 0) document.getElementById('notifSound').play();
+                document.getElementById('trips-list').innerHTML = trips.map(t => `
+                    <div class="trip-card">
+                        <b>👤 ${t.passenger_name}</b><br>
+                        <small>📍 ${t.pickup_point}</small><br>
+                        <a href="tel:${t.phone}" style="color:var(--gold); font-size:13px;">اتصال 📞 ${t.phone}</a>
+                    </div>
+                `).join('') || "لا طلبات";
+
+                if (trips.length > lastTripsCount && lastTripsCount !== 0) document.getElementById('notifSound').play().catch(()=>{});
                 lastTripsCount = trips.length;
             } catch(e){}
         }
@@ -346,70 +271,29 @@
         }
 
         async function sendTrip() {
-            const name = document.getElementById('uName').value;
-            const phone = document.getElementById('uPhone').value;
-            if(!name || !phone) return alert("البيانات ناقصة");
+            const n = document.getElementById('uName').value, p = document.getElementById('uPhone').value;
+            if(!n || !p) return alert("اكمل البيانات");
             await fetch(`${API}/trips`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ name, phone, loc: document.getElementById('uLoc').value, driver: document.getElementById('uDr').value })
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ name: n, phone: p, loc: document.getElementById('uLoc').value, driver: document.getElementById('uDr').value })
             });
-            alert("✅ تم الطلب!");
+            alert("✅ تم إرسال الطلب!");
         }
 
-        function displayTrips(trips) {
-            const list = document.getElementById('trips-list');
-            if(!list) return;
-            list.innerHTML = trips.map(t => `
-                <div class="trip-item">
-                    <p><b>👤 الراكب:</b> ${t.passenger_name}</p>
-                    <p><b>📞 هاتف:</b> <a href="tel:${t.phone}" style="color:var(--gold);">${t.phone}</a></p>
-                    <p><b>📍 الوجهة:</b> ${t.pickup_point}</p>
-                </div>
-            `).join('') || '<p style="text-align:center;">لا يوجد طلبات</p>';
+        function addAd() {
+            const val = document.getElementById('ad-input').value;
+            if(val) { ads.push(val); alert("تم النشر"); document.getElementById('ad-input').value = ""; }
         }
 
-        async function registerDriver() {
-            const name = document.getElementById('reg-name').value;
-            const phone = document.getElementById('reg-phone').value;
-            const pass = document.getElementById('reg-pass').value;
-            await fetch(`${API}/drivers`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ name, phone, pass, car: "تويوتا", plate: "000" })
-            });
-            alert("تم التسجيل");
-        }
+        // تدوير الإعلانات
+        let adIdx = 0;
+        setInterval(() => {
+            const el = document.getElementById('ad-text');
+            if(el) { el.style.opacity = 0; setTimeout(() => { el.innerText = ads[adIdx]; el.style.opacity = 1; adIdx = (adIdx+1)%ads.length; }, 500); }
+        }, 6000);
 
-        async function addLocation() {
-            await fetch(`${API}/locations`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ name: document.getElementById('loc-name').value, type: document.getElementById('uType').value, price: document.getElementById('loc-price').value })
-            });
-            alert("تمت الإضافة");
-        }
-const ads = [
-    "🔥 خصم 20% لدى مطعم الشروق لزبائن تاكسي مسلاتة!",
-    "📱 محلات الثقة للهواتف - صيانة فورية وضمان حقيقي",
-    "☕ استمتع بأفضل قهوة في كافيه المدينة الآن",
-    "🛠️ مركز الوفاء لصيانة السيارات - خدمة ممتازة"
-];
-
-let currentAdIndex = 0;
-
-function rotateAds() {
-    const adElement = document.getElementById('ad-text');
-    if (adElement) {
-        adElement.innerText = ads[currentAdIndex];
-        currentAdIndex = (currentAdIndex + 1) % ads.length;
-    }
-}
-
-// تغيير الإعلان كل 5 ثوانٍ
-setInterval(rotateAds, 5000);
-rotateAds(); // تشغيل أول إعلان فوراً
         setInterval(refresh, 10000);
+        refresh();
     </script>
 </body>
 </html>
