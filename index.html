@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تاكسي مسلاتة - النسخة الاحترافية 2026</title>
     <style>
+        /* ... (احتفظت بنفس تنسيقات الـ CSS الرائعة الخاصة بك دون تغيير) ... */
         :root {
             --gold: #ffcc00;
             --gold-glow: rgba(255, 204, 0, 0.4);
@@ -25,7 +26,6 @@
             overflow-x: hidden;
         }
 
-        /* خلفية الأيقونات المتحركة */
         .bg-pattern {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -44,7 +44,6 @@
         .active-page { display: block; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* شاشة الترحيب */
         .welcome-box {
             text-align: center;
             margin-top: 10vh;
@@ -65,7 +64,6 @@
         }
         .logo-btn:active { transform: scale(0.85); }
 
-        /* شريط الإعلانات */
         .ad-banner {
             background: linear-gradient(90deg, rgba(255,204,0,0.15), transparent);
             border: 1px dashed var(--gold);
@@ -76,9 +74,8 @@
             position: relative;
         }
         .ad-tag { position: absolute; top: -10px; right: 10px; background: var(--gold); color: #000; font-size: 10px; padding: 2px 8px; border-radius: 5px; font-weight: bold; }
-        #ad-text { color: var(--gold); font-weight: bold; font-size: 14px; transition: 0.5s; }
+        #ad-text { color: var(--gold); font-weight: bold; font-size: 14px; transition: 0.5s; opacity: 1; }
 
-        /* الأزرار */
         .btn {
             width: 100%;
             padding: 18px;
@@ -98,7 +95,6 @@
         .btn-gold:hover { transform: translateY(-3px); box-shadow: 0 15px 25px var(--gold-glow); }
         .btn-outline { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid var(--glass-border); }
 
-        /* الكروت والحقول */
         .glass-card {
             background: var(--card-bg);
             padding: 20px;
@@ -113,7 +109,6 @@
         }
         input:focus { border-color: var(--gold); }
 
-        /* لوحة الشرف */
         .top-driver-item {
             display: flex; justify-content: space-between; align-items: center;
             padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
@@ -198,6 +193,13 @@
             <input id="reg-pass" placeholder="الباسورد">
             <button class="btn btn-gold" style="padding:10px;" onclick="registerDriver()">حفظ</button>
         </div>
+
+        <div class="glass-card">
+            <h4 style="color:var(--gold);">📍 إضافة وجهة وسعر</h4>
+            <input id="loc-name" placeholder="اسم المنطقة">
+            <input id="loc-price" placeholder="السعر (د.ل)">
+            <button class="btn btn-gold" style="padding:10px;" onclick="addLocation()">حفظ الوجهة</button>
+        </div>
     </div>
 
     <audio id="notifSound" src="https://www.soundjay.com/buttons/beep-07a.mp3" preload="auto"></audio>
@@ -227,69 +229,139 @@
 
         async function enterDriver() {
             const ph = prompt("📞 هاتفك:"), ps = prompt("🔑 الباسورد:");
+            if(!ph || !ps) return;
             const res = await fetch(`${API}/drivers`);
             const drs = await res.json();
             const dr = drs.find(d => d.phone === ph && d.password === ps);
-            if(dr) { showPage('driver-page'); document.getElementById('dr-hi').innerText = `أهلاً كابتن ${dr.driver_name}`; }
-            else alert("خطأ في البيانات");
+            if(dr) { 
+                showPage('driver-page'); 
+                document.getElementById('dr-hi').innerText = `أهلاً كابتن ${dr.driver_name}`; 
+            } else alert("خطأ في البيانات");
         }
 
         async function refresh() {
             try {
-                const [resL, resD, resT] = await Promise.all([fetch(`${API}/locations`), fetch(`${API}/drivers`), fetch(`${API}/trips`)]);
+                const [resL, resD, resT] = await Promise.all([
+                    fetch(`${API}/locations`), 
+                    fetch(`${API}/drivers`), 
+                    fetch(`${API}/trips`)
+                ]);
+                
                 locsData = await resL.json();
                 loadLocs();
-                const drs = await resD.json();
-                document.getElementById('uDr').innerHTML = drs.map(d => `<option value="${d.driver_name}">${d.driver_name}</option>`).join('');
                 
-                // لوحة الشرف
+                const drs = await resD.json();
+                document.getElementById('uDr').innerHTML = drs.map(d => `<option value="${d.driver_name}">${d.driver_name}</option>`).join('') || '<option>لا يوجد سائقين</option>';
+                
                 document.getElementById('top-drivers').innerHTML = drs.slice(0,3).map(d => `
                     <div class="top-driver-item">
                         <span>⭐ كابتن ${d.driver_name}</span>
                         <span style="color:var(--gold); font-size:12px;">${Math.floor(Math.random()*80)+20} رحلة ✅</span>
                     </div>
-                `).join('');
+                `).join('') || "سيظهر المتميزون هنا";
 
                 const trips = await resT.json();
                 document.getElementById('trips-list').innerHTML = trips.map(t => `
                     <div class="trip-card">
                         <b>👤 ${t.passenger_name}</b><br>
-                        <small>📍 ${t.pickup_point}</small><br>
+                        <small>📍 الوجهة: ${t.pickup_point}</small><br>
                         <a href="tel:${t.phone}" style="color:var(--gold); font-size:13px;">اتصال 📞 ${t.phone}</a>
                     </div>
-                `).join('') || "لا طلبات";
+                `).join('') || '<p style="text-align:center; color:gray;">لا توجد طلبات حالياً</p>';
 
-                if (trips.length > lastTripsCount && lastTripsCount !== 0) document.getElementById('notifSound').play().catch(()=>{});
+                if (trips.length > lastTripsCount && lastTripsCount !== 0) {
+                    document.getElementById('notifSound').play().catch(()=>{});
+                }
                 lastTripsCount = trips.length;
-            } catch(e){}
+            } catch(e) { console.log("خطأ في التحديث:", e); }
         }
 
         function loadLocs() {
             const type = document.getElementById('uType').value;
             const filtered = locsData.filter(l => l.location_type === type);
-            document.getElementById('uLoc').innerHTML = filtered.map(l => `<option value="${l.location_name}">${l.location_name} (${l.price} د.ل)</option>`).join('');
+            document.getElementById('uLoc').innerHTML = filtered.map(l => `<option value="${l.location_name}">${l.location_name} (${l.price} د.ل)</option>`).join('') || '<option>لا توجد وجهات</option>';
         }
+
+        // --- دوال الإرسال والحفظ (المعدلة) ---
 
         async function sendTrip() {
             const n = document.getElementById('uName').value, p = document.getElementById('uPhone').value;
-            if(!n || !p) return alert("اكمل البيانات");
-            await fetch(`${API}/trips`, {
-                method: 'POST', headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ name: n, phone: p, loc: document.getElementById('uLoc').value, driver: document.getElementById('uDr').value })
+            const loc = document.getElementById('uLoc').value, dr = document.getElementById('uDr').value;
+            if(!n || !p || !loc) return alert("يرجى إكمال بيانات الطلب");
+            
+            const res = await fetch(`${API}/trips`, {
+                method: 'POST', 
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ name: n, phone: p, loc: loc, driver: dr })
             });
-            alert("✅ تم إرسال الطلب!");
+            if(res.ok) {
+                alert("✅ تم إرسال الطلب بنجاح!");
+                document.getElementById('uName').value = "";
+                document.getElementById('uPhone').value = "";
+                refresh();
+            }
+        }
+
+        async function registerDriver() {
+            const n = document.getElementById('reg-name').value;
+            const ph = document.getElementById('reg-phone').value;
+            const ps = document.getElementById('reg-pass').value;
+            if(!n || !ph || !ps) return alert("أدخل بيانات السائق كاملة");
+
+            const res = await fetch(`${API}/drivers`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ name: n, phone: ph, car: "تويوتا", plate: "000", pass: ps })
+            });
+            if(res.ok) {
+                alert("✅ تم حفظ السائق");
+                document.getElementById('reg-name').value = "";
+                document.getElementById('reg-phone').value = "";
+                document.getElementById('reg-pass').value = "";
+                refresh();
+            }
+        }
+
+        async function addLocation() {
+            const n = document.getElementById('loc-name').value;
+            const pr = document.getElementById('loc-price').value;
+            const type = document.getElementById('uType').value;
+            if(!n || !pr) return alert("أدخل اسم المنطقة والسعر");
+
+            const res = await fetch(`${API}/locations`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ name: n, type: type, price: pr })
+            });
+            if(res.ok) {
+                alert("✅ تم حفظ الوجهة والسعر");
+                document.getElementById('loc-name').value = "";
+                document.getElementById('loc-price').value = "";
+                refresh();
+            }
         }
 
         function addAd() {
             const val = document.getElementById('ad-input').value;
-            if(val) { ads.push(val); alert("تم النشر"); document.getElementById('ad-input').value = ""; }
+            if(val) { 
+                ads.push(val); 
+                alert("✅ تم نشر الإعلان في التطبيق"); 
+                document.getElementById('ad-input').value = ""; 
+            }
         }
 
         // تدوير الإعلانات
         let adIdx = 0;
         setInterval(() => {
             const el = document.getElementById('ad-text');
-            if(el) { el.style.opacity = 0; setTimeout(() => { el.innerText = ads[adIdx]; el.style.opacity = 1; adIdx = (adIdx+1)%ads.length; }, 500); }
+            if(el) { 
+                el.style.opacity = 0; 
+                setTimeout(() => { 
+                    el.innerText = ads[adIdx]; 
+                    el.style.opacity = 1; 
+                    adIdx = (adIdx+1)%ads.length; 
+                }, 500); 
+            }
         }, 6000);
 
         setInterval(refresh, 10000);
