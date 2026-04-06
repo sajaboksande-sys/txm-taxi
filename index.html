@@ -389,7 +389,26 @@
             });
             alert("تمت الإضافة");
         }
+const ads = [
+    "🔥 خصم 20% لدى مطعم الشروق لزبائن تاكسي مسلاتة!",
+    "📱 محلات الثقة للهواتف - صيانة فورية وضمان حقيقي",
+    "☕ استمتع بأفضل قهوة في كافيه المدينة الآن",
+    "🛠️ مركز الوفاء لصيانة السيارات - خدمة ممتازة"
+];
 
+let currentAdIndex = 0;
+
+function rotateAds() {
+    const adElement = document.getElementById('ad-text');
+    if (adElement) {
+        adElement.innerText = ads[currentAdIndex];
+        currentAdIndex = (currentAdIndex + 1) % ads.length;
+    }
+}
+
+// تغيير الإعلان كل 5 ثوانٍ
+setInterval(rotateAds, 5000);
+rotateAds(); // تشغيل أول إعلان فوراً
         setInterval(refresh, 10000);
     </script>
 </body>
