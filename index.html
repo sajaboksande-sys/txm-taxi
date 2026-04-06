@@ -3,220 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تاكسي مسلاتة - النسخة الاحترافية 2026</title>
+    <title>تاكسي مسلاتة - النسخة المستقرة</title>
     <style>
-        /* ... (احتفظت بنفس تنسيقات الـ CSS الرائعة الخاصة بك دون تغيير) ... */
-        :root {
-            --gold: #ffcc00;
-            --gold-glow: rgba(255, 204, 0, 0.4);
-            --dark-bg: #0a0a0a;
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --text-main: #ffffff;
-            --text-dim: rgba(255, 255, 255, 0.6);
-            --success: #00c853;
-        }
-
-        body {
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            margin: 0;
-            background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
-            color: var(--text-main);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        .bg-pattern {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1;
-            opacity: 0.04;
-            font-size: 30px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 40px;
-            pointer-events: none;
-            animation: moveBG 20s linear infinite;
-        }
-        @keyframes moveBG { from { transform: translateY(0); } to { transform: translateY(-50px); } }
-
-        .page { display: none; padding: 20px; max-width: 480px; margin: auto; animation: slideUp 0.4s ease-out; }
+        :root { --gold: #ffcc00; --dark-bg: #0a0a0a; --card-bg: rgba(255, 255, 255, 0.05); --glass-border: rgba(255, 255, 255, 0.1); }
+        body { font-family: sans-serif; margin: 0; background: #000; color: #fff; direction: rtl; }
+        .page { display: none; padding: 20px; max-width: 500px; margin: auto; }
         .active-page { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        .welcome-box {
-            text-align: center;
-            margin-top: 10vh;
-            padding: 40px 25px;
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            border-radius: 35px;
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.6);
-        }
-
-        .logo-btn {
-            font-size: 90px;
-            cursor: pointer;
-            transition: 0.3s;
-            display: inline-block;
-            filter: drop-shadow(0 0 10px var(--gold-glow));
-        }
-        .logo-btn:active { transform: scale(0.85); }
-
-        .ad-banner {
-            background: linear-gradient(90deg, rgba(255,204,0,0.15), transparent);
-            border: 1px dashed var(--gold);
-            border-radius: 15px;
-            padding: 15px;
-            margin: 20px 0;
-            text-align: center;
-            position: relative;
-        }
-        .ad-tag { position: absolute; top: -10px; right: 10px; background: var(--gold); color: #000; font-size: 10px; padding: 2px 8px; border-radius: 5px; font-weight: bold; }
-        #ad-text { color: var(--gold); font-weight: bold; font-size: 14px; transition: 0.5s; opacity: 1; }
-
-        .btn {
-            width: 100%;
-            padding: 18px;
-            border-radius: 18px;
-            border: none;
-            font-size: 18px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        .btn-gold { background: var(--gold); color: #000; box-shadow: 0 10px 20px var(--gold-glow); }
-        .btn-gold:hover { transform: translateY(-3px); box-shadow: 0 15px 25px var(--gold-glow); }
-        .btn-outline { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid var(--glass-border); }
-
-        .glass-card {
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 22px;
-            border: 1px solid var(--glass-border);
-            margin-bottom: 20px;
-        }
-        input, select {
-            width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px;
-            border: 1px solid var(--glass-border); background: rgba(0,0,0,0.3);
-            color: #fff; outline: none; box-sizing: border-box;
-        }
-        input:focus { border-color: var(--gold); }
-
-        .top-driver-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .trip-card {
-            background: linear-gradient(to left, rgba(255,204,0,0.05), transparent);
-            border-right: 4px solid var(--gold);
-            padding: 15px; border-radius: 12px; margin-bottom: 10px;
-        }
-
-        .logout-link { color: #ff4444; font-size: 13px; cursor: pointer; text-decoration: underline; }
+        .glass-card { background: var(--card-bg); padding: 15px; border-radius: 15px; border: 1px solid var(--glass-border); margin-bottom: 15px; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid var(--glass-border); background: #111; color: #fff; box-sizing: border-box; }
+        .btn { width: 100%; padding: 15px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .btn-gold { background: var(--gold); color: #000; }
+        .ad-banner { border: 1px dashed var(--gold); padding: 10px; text-align: center; border-radius: 10px; margin-bottom: 15px; color: var(--gold); }
+        .trip-card { border-right: 4px solid var(--gold); background: var(--card-bg); padding: 10px; margin-bottom: 10px; border-radius: 5px; }
+        .logout { color: #ff4444; cursor: pointer; font-size: 12px; }
     </style>
 </head>
 <body>
 
-    <div class="bg-pattern">🚕 🏎️ 📍 📱 🚕 🏎️ 📍 📱 🚕 🏎️ 📍 📱 🚕 🏎️ 📍 📱</div>
-
     <div id="welcome-page" class="page active-page">
-        <div class="welcome-box">
-            <div class="logo-btn" id="secret-logo">🚕</div>
-            <h1 style="margin:10px 0;">تاكسي مسلاتة</h1>
-            <p style="color:var(--text-dim);">الرفاهية والأمان في كل مشوار</p>
-            <button class="btn btn-gold" onclick="showPage('user-page')">اطلب رحلة 👤</button>
-            <button class="btn btn-outline" onclick="enterDriver()">دخول الكابتن 🏎️</button>
+        <div style="text-align:center; margin-top:20vh;">
+            <h1 id="secret-logo" style="font-size:60px; cursor:pointer;">🚕</h1>
+            <h1>تاكسي مسلاتة</h1>
+            <button class="btn btn-gold" onclick="showPage('user-page')">طلب رحلة</button>
+            <button class="btn" style="background:#222; color:#fff;" onclick="enterDriver()">دخول السائق</button>
         </div>
     </div>
 
     <div id="user-page" class="page">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h2>احجز رحلتك</h2>
-            <span class="logout-link" onclick="goHome()">رجوع</span>
+        <div style="display:flex; justify-content:space-between;">
+            <h3>حجز رحلة</h3>
+            <span class="logout" onclick="showPage('welcome-page')">رجوع</span>
         </div>
-
-        <div class="ad-banner">
-            <div class="ad-tag">AD ممول</div>
-            <span id="ad-text">جاري تحميل العروض...</span>
-        </div>
-
-        <div class="glass-card" style="border-right: 4px solid var(--success);">
-            <h4 style="margin:0 0 10px 0; color:var(--success);">🏆 كباتن التميز (الأكثر طلباً)</h4>
-            <div id="top-drivers"></div>
-        </div>
-
+        <div class="ad-banner" id="ad-text">جاري تحميل الإعلانات...</div>
         <div class="glass-card">
-            <input type="text" id="uName" placeholder="👤 اسمك">
-            <input type="tel" id="uPhone" placeholder="📞 رقم هاتفك">
+            <input type="text" id="uName" placeholder="الاسم">
+            <input type="tel" id="uPhone" placeholder="رقم الهاتف">
             <select id="uType" onchange="loadLocs()">
-                <option value="داخل مسلاتة">داخل مسلاتة 🏘️</option>
-                <option value="خارج مسلاتة">خارج مسلاتة 🛤️</option>
+                <option value="داخل مسلاتة">داخل مسلاتة</option>
+                <option value="خارج مسلاتة">خارج مسلاتة</option>
             </select>
             <select id="uLoc"></select>
             <select id="uDr"></select>
-            <button class="btn btn-gold" onclick="sendTrip()">تأكيد الحجز الآن 🚗</button>
+            <button class="btn btn-gold" onclick="sendTrip()">تأكيد الطلب</button>
         </div>
     </div>
 
     <div id="driver-page" class="page">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h2 id="dr-hi">طلبات الكابتن</h2>
-            <span class="logout-link" onclick="goHome()">خروج</span>
+        <div style="display:flex; justify-content:space-between;">
+            <h3 id="dr-hi">الطلبات</h3>
+            <span class="logout" onclick="showPage('welcome-page')">خروج</span>
         </div>
         <div id="trips-list"></div>
     </div>
 
     <div id="admin-page" class="page">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h2>إدارة النظام ⚙️</h2>
-            <span class="logout-link" onclick="goHome()">إغلاق</span>
-        </div>
-        
+        <h3>لوحة التحكم</h3>
         <div class="glass-card">
-            <h4 style="color:var(--gold);">📣 تحديث الإعلانات</h4>
-            <input id="ad-input" placeholder="نص الإعلان الجديد">
-            <button class="btn btn-gold" style="padding:10px;" onclick="addAd()">نشر الإعلان</button>
-        </div>
-
-        <div class="glass-card">
-            <h4 style="color:var(--gold);">👤 إضافة كابتن</h4>
-            <input id="reg-name" placeholder="الاسم">
+            <h4>إضافة سائق</h4>
+            <input id="reg-name" placeholder="اسم السائق">
             <input id="reg-phone" placeholder="الهاتف">
-            <input id="reg-pass" placeholder="الباسورد">
-            <button class="btn btn-gold" style="padding:10px;" onclick="registerDriver()">حفظ</button>
+            <input id="reg-pass" placeholder="كلمة السر">
+            <button class="btn btn-gold" onclick="registerDriver()">حفظ السائق</button>
         </div>
-
         <div class="glass-card">
-            <h4 style="color:var(--gold);">📍 إضافة وجهة وسعر</h4>
+            <h4>إضافة وجهة</h4>
             <input id="loc-name" placeholder="اسم المنطقة">
-            <input id="loc-price" placeholder="السعر (د.ل)">
-            <button class="btn btn-gold" style="padding:10px;" onclick="addLocation()">حفظ الوجهة</button>
+            <input id="loc-price" placeholder="السعر">
+            <button class="btn btn-gold" onclick="addLocation()">حفظ الوجهة</button>
         </div>
+        <button class="btn" onclick="showPage('welcome-page')">إغلاق</button>
     </div>
-
-    <audio id="notifSound" src="https://www.soundjay.com/buttons/beep-07a.mp3" preload="auto"></audio>
 
     <script>
         const API = 'https://txm-taxi.onrender.com/api';
-        let locsData = [], lastTripsCount = 0, adminClicks = 0;
-        let ads = ["🔥 خصم 20% لدى محلات المدينة!", "🚕 تاكسي مسلاتة.. رفيقك في كل طريق"];
+        let locsData = [], ads = ["🔥 عروض خاصة اليوم!", "🚕 تاكسي مسلاتة الأسرع دائماً"], adminClicks = 0;
 
-        // الدخول السري
         document.getElementById('secret-logo').onclick = () => {
             adminClicks++;
             if(adminClicks === 3) {
-                if(prompt("🔒 كلمة السر:") === "msallata2541995") showPage('admin-page');
+                if(prompt("كلمة السر:") === "msallata2541995") showPage('admin-page');
                 adminClicks = 0;
             }
-            setTimeout(() => adminClicks = 0, 2000);
         };
 
         function showPage(id) {
@@ -225,55 +92,26 @@
             refresh();
         }
 
-        function goHome() { showPage('welcome-page'); }
-
-        async function enterDriver() {
-            const ph = prompt("📞 هاتفك:"), ps = prompt("🔑 الباسورد:");
-            if(!ph || !ps) return;
-            const res = await fetch(`${API}/drivers`);
-            const drs = await res.json();
-            const dr = drs.find(d => d.phone === ph && d.password === ps);
-            if(dr) { 
-                showPage('driver-page'); 
-                document.getElementById('dr-hi').innerText = `أهلاً كابتن ${dr.driver_name}`; 
-            } else alert("خطأ في البيانات");
-        }
-
         async function refresh() {
             try {
-                const [resL, resD, resT] = await Promise.all([
-                    fetch(`${API}/locations`), 
-                    fetch(`${API}/drivers`), 
-                    fetch(`${API}/trips`)
-                ]);
-                
-                locsData = await resL.json();
-                loadLocs();
-                
-                const drs = await resD.json();
-                document.getElementById('uDr').innerHTML = drs.map(d => `<option value="${d.driver_name}">${d.driver_name}</option>`).join('') || '<option>لا يوجد سائقين</option>';
-                
-                document.getElementById('top-drivers').innerHTML = drs.slice(0,3).map(d => `
-                    <div class="top-driver-item">
-                        <span>⭐ كابتن ${d.driver_name}</span>
-                        <span style="color:var(--gold); font-size:12px;">${Math.floor(Math.random()*80)+20} رحلة ✅</span>
-                    </div>
-                `).join('') || "سيظهر المتميزون هنا";
+                const resL = await fetch(`${API}/locations`).then(r => r.json());
+                const resD = await fetch(`${API}/drivers`).then(r => r.json());
+                const resT = await fetch(`${API}/trips`).then(r => r.json());
 
-                const trips = await resT.json();
+                locsData = Array.isArray(resL) ? resL : [];
+                loadLocs();
+
+                const drs = Array.isArray(resD) ? resD : [];
+                document.getElementById('uDr').innerHTML = drs.map(d => `<option>${d.driver_name}</option>`).join('') || '<option>لا يوجد سائقين</option>';
+
+                const trips = Array.isArray(resT) ? resT : [];
                 document.getElementById('trips-list').innerHTML = trips.map(t => `
                     <div class="trip-card">
-                        <b>👤 ${t.passenger_name}</b><br>
-                        <small>📍 الوجهة: ${t.pickup_point}</small><br>
-                        <a href="tel:${t.phone}" style="color:var(--gold); font-size:13px;">اتصال 📞 ${t.phone}</a>
+                        <b>👤 ${t.passenger_name}</b> | 📍 ${t.pickup_point}<br>
+                        <a href="tel:${t.phone}" style="color:var(--gold)">اتصال: ${t.phone}</a>
                     </div>
-                `).join('') || '<p style="text-align:center; color:gray;">لا توجد طلبات حالياً</p>';
-
-                if (trips.length > lastTripsCount && lastTripsCount !== 0) {
-                    document.getElementById('notifSound').play().catch(()=>{});
-                }
-                lastTripsCount = trips.length;
-            } catch(e) { console.log("خطأ في التحديث:", e); }
+                `).join('') || "لا توجد طلبات";
+            } catch(e) { console.error("Refresh Error"); }
         }
 
         function loadLocs() {
@@ -282,87 +120,32 @@
             document.getElementById('uLoc').innerHTML = filtered.map(l => `<option value="${l.location_name}">${l.location_name} (${l.price} د.ل)</option>`).join('') || '<option>لا توجد وجهات</option>';
         }
 
-        // --- دوال الإرسال والحفظ (المعدلة) ---
-
         async function sendTrip() {
             const n = document.getElementById('uName').value, p = document.getElementById('uPhone').value;
-            const loc = document.getElementById('uLoc').value, dr = document.getElementById('uDr').value;
-            if(!n || !p || !loc) return alert("يرجى إكمال بيانات الطلب");
-            
-            const res = await fetch(`${API}/trips`, {
-                method: 'POST', 
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ name: n, phone: p, loc: loc, driver: dr })
-            });
-            if(res.ok) {
-                alert("✅ تم إرسال الطلب بنجاح!");
-                document.getElementById('uName').value = "";
-                document.getElementById('uPhone').value = "";
-                refresh();
-            }
+            const l = document.getElementById('uLoc').value, d = document.getElementById('uDr').value;
+            if(!n || !p) return alert("أكمل البيانات");
+            await fetch(`${API}/trips`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name:n, phone:p, loc:l, driver:d}) });
+            alert("تم الطلب!"); refresh();
         }
 
         async function registerDriver() {
-            const n = document.getElementById('reg-name').value;
-            const ph = document.getElementById('reg-phone').value;
-            const ps = document.getElementById('reg-pass').value;
-            if(!n || !ph || !ps) return alert("أدخل بيانات السائق كاملة");
-
-            const res = await fetch(`${API}/drivers`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ name: n, phone: ph, car: "تويوتا", plate: "000", pass: ps })
-            });
-            if(res.ok) {
-                alert("✅ تم حفظ السائق");
-                document.getElementById('reg-name').value = "";
-                document.getElementById('reg-phone').value = "";
-                document.getElementById('reg-pass').value = "";
-                refresh();
-            }
+            const name = document.getElementById('reg-name').value, phone = document.getElementById('reg-phone').value, pass = document.getElementById('reg-pass').value;
+            await fetch(`${API}/drivers`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name, phone, pass, car:'تويوتا', plate:'000'}) });
+            alert("تم الحفظ"); refresh();
         }
 
         async function addLocation() {
-            const n = document.getElementById('loc-name').value;
-            const pr = document.getElementById('loc-price').value;
-            const type = document.getElementById('uType').value;
-            if(!n || !pr) return alert("أدخل اسم المنطقة والسعر");
-
-            const res = await fetch(`${API}/locations`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ name: n, type: type, price: pr })
-            });
-            if(res.ok) {
-                alert("✅ تم حفظ الوجهة والسعر");
-                document.getElementById('loc-name').value = "";
-                document.getElementById('loc-price').value = "";
-                refresh();
-            }
-        }
-
-        function addAd() {
-            const val = document.getElementById('ad-input').value;
-            if(val) { 
-                ads.push(val); 
-                alert("✅ تم نشر الإعلان في التطبيق"); 
-                document.getElementById('ad-input').value = ""; 
-            }
+            const name = document.getElementById('loc-name').value, price = document.getElementById('loc-price').value, type = document.getElementById('uType').value;
+            await fetch(`${API}/locations`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name, price, type}) });
+            alert("تم الحفظ"); refresh();
         }
 
         // تدوير الإعلانات
         let adIdx = 0;
         setInterval(() => {
-            const el = document.getElementById('ad-text');
-            if(el) { 
-                el.style.opacity = 0; 
-                setTimeout(() => { 
-                    el.innerText = ads[adIdx]; 
-                    el.style.opacity = 1; 
-                    adIdx = (adIdx+1)%ads.length; 
-                }, 500); 
-            }
-        }, 6000);
+            document.getElementById('ad-text').innerText = ads[adIdx];
+            adIdx = (adIdx + 1) % ads.length;
+        }, 5000);
 
         setInterval(refresh, 10000);
         refresh();
