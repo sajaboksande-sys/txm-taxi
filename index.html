@@ -3,304 +3,256 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تاكسي مسلاتة - النظام الذكي</title>
+    <title>تاكسي مسلاتة - النسخة الفاخرة</title>
     <style>
         :root {
-            --primary: #ffcc00; /* الأصفر الجريء */
-            --primary-dark: #e6b800;
-            --dark: #121212; /* الأسود العصري */
-            --bg-dark: #1a1a1a;
-            --text-light: #ffffff;
-            --text-dark: #333333;
-            --gray: #f4f4f4;
-            --glass: rgba(255, 255, 255, 0.05); /* تأثير زجاجي */
+            --gold: #ffcc00;
+            --gold-hover: #e6b800;
+            --dark-bg: #0f0f0f;
+            --card-bg: rgba(255, 255, 255, 0.06);
+            --text-main: #ffffff;
+            --text-dim: rgba(255, 255, 255, 0.6);
         }
 
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            background-color: var(--dark);
-            color: var(--text-light);
+            background: radial-gradient(circle at top right, #1a1a1a, #000000);
+            color: var(--text-main);
+            min-height: 100vh;
             overflow-x: hidden;
-            position: relative;
         }
 
-        /* --- خلفية أيقونات متحركة (الجريئة) --- */
-        body::before {
-            content: "🚕 🏎️ 📍 📞 👤 ⚙️ 🗺️";
+        /* خلفية الأيقونات المتحركة الجريئة */
+        .bg-icons {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            font-size: 50px;
-            color: rgba(255, 255, 255, 0.03); /* شفافة جداً */
-            word-spacing: 100px;
-            line-height: 150px;
-            pointer-events: none;
             z-index: -1;
-            animation: backgroundMove 20s linear infinite;
-        }
-
-        @keyframes backgroundMove {
-            from { background-position: 0 0; }
-            to { background-position: 100% 100%; }
+            opacity: 0.03;
+            font-size: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 50px;
+            user-select: none;
         }
 
         .page {
             display: none;
-            padding: 20px;
-            max-width: 500px;
+            padding: 25px;
+            max-width: 480px;
             margin: auto;
-            min-height: 100vh;
-            box-sizing: border-box;
+            animation: fadeIn 0.5s ease;
         }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .active-page { display: block; }
 
-        /* --- شاشة الترحيب --- */
-        .welcome-card {
+        /* شاشة الترحيب */
+        .welcome-container {
             text-align: center;
-            background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 100%);
-            padding: 50px 30px;
-            border-radius: 25px;
-            backdrop-filter: blur(10px);
+            margin-top: 15vh;
+            padding: 40px 20px;
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            border-radius: 30px;
             border: 1px solid rgba(255,255,255,0.1);
-            margin-top: 80px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
 
-        .logo-icon {
-            font-size: 70px;
-            margin-bottom: 10px;
-            display: inline-block;
-            animation: carDrive 2s ease-in-out infinite alternate;
-        }
-
-        @keyframes carDrive {
-            from { transform: translateX(-10px); }
-            to { transform: translateX(10px); }
-        }
-
-        .welcome-title {
-            font-size: 28px;
-            font-weight: 800;
-            margin: 10px 0;
-            color: var(--primary);
-        }
-
-        .welcome-subtitle {
-            font-size: 16px;
-            color: rgba(255,255,255,0.7);
-            margin-bottom: 30px;
-        }
-
-        /* --- الأزرار العصرية --- */
-        .btn-main {
-            width: 100%;
-            padding: 16px;
-            margin: 12px 0;
-            border: none;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: 700;
+        .main-logo {
+            font-size: 80px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            display: inline-block;
+            transition: 0.3s;
+            user-select: none;
+        }
+
+        .main-logo:active { transform: scale(0.9); }
+
+        .app-title {
+            font-size: 32px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            margin: 10px 0;
+            background: linear-gradient(to bottom, #fff, #888);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* الأزرار العصرية */
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border-radius: 15px;
+            border: none;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 15px;
             display: flex;
-            justify-content: center;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
+            gap: 12px;
         }
 
-        .btn-main:active { transform: scale(0.98); }
+        .btn-gold { background: var(--gold); color: #000; box-shadow: 0 8px 20px rgba(255,204,0,0.3); }
+        .btn-gold:hover { background: var(--gold-hover); transform: translateY(-2px); }
 
-        .btn-user {
-            background-color: var(--primary);
-            color: var(--dark);
-            box-shadow: 0 6px 20px rgba(255, 204, 0, 0.4);
-        }
-        .btn-user:hover { background-color: var(--primary-dark); }
+        .btn-outline { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); }
+        .btn-outline:hover { background: rgba(255,255,255,0.1); }
 
-        .btn-driver {
-            background-color: #28a745;
-            color: white;
-            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
-        }
-        .btn-driver:hover { background-color: #218838; }
-
-        .btn-admin {
-            background-color: transparent;
-            color: rgba(255,255,255,0.5);
-            font-size: 14px;
-            margin-top: 20px;
-            text-decoration: underline;
+        /* البطاقات والحقول */
+        .glass-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.08);
+            margin-bottom: 20px;
         }
 
-        /* --- تصميم الإدخال والقوائم --- */
-        .form-group { margin-bottom: 15px; }
-        
-        label {
-            display: block;
-            font-size: 14px;
-            color: rgba(255,255,255,0.7);
-            margin-bottom: 5px;
-            margin-right: 5px;
-        }
+        .input-group { margin-bottom: 20px; position: relative; }
+        .input-group label { display: block; font-size: 13px; color: var(--text-dim); margin-bottom: 8px; margin-right: 5px; }
 
         input, select {
             width: 100%;
             padding: 15px;
-            margin: 8px 0;
-            border: 1px solid rgba(255,255,255,0.1);
             border-radius: 12px;
-            background-color: rgba(255,255,255,0.05);
-            color: white;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.2);
+            color: #fff;
             font-size: 16px;
             box-sizing: border-box;
-            transition: 0.3s;
-        }
-
-        input:focus, select:focus {
-            border-color: var(--primary);
-            background-color: rgba(255,255,255,0.1);
             outline: none;
         }
 
-        select option { background-color: var(--bg-dark); color: white; }
+        input:focus { border-color: var(--gold); }
 
-        /* --- تصميم البطاقات في الأقسام --- */
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            border-bottom: 2px solid rgba(255,255,255,0.05);
-            padding-bottom: 10px;
-        }
-
-        .card {
-            background-color: var(--glass);
+        /* تصميم طلبات السائق */
+        .trip-item {
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
             padding: 20px;
             border-radius: 15px;
             margin-bottom: 15px;
-            border: 1px solid rgba(255,255,255,0.05);
-            transition: 0.3s;
-        }
-        .card:hover { border-color: rgba(255,204,0,0.3); }
-
-        .trip-card {
-            border-right: 5px solid var(--primary);
-            position: relative;
+            border-right: 4px solid var(--gold);
         }
 
-        .trip-p { margin: 8px 0; font-size: 15px; display: flex; align-items: center; gap: 8px;}
-        .trip-p b { color: var(--primary); }
-
-        .logout-btn {
-            background-color: rgba(255, 68, 68, 0.1);
+        .logout-pill {
+            background: rgba(255, 68, 68, 0.1);
             color: #ff4444;
-            border: 1px solid #ff4444;
-            padding: 8px 15px;
-            border-radius: 8px;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 12px;
             cursor: pointer;
-            font-size: 14px;
-            transition: 0.3s;
+            border: 1px solid rgba(255, 68, 68, 0.3);
         }
-        .logout-btn:hover { background-color: #ff4444; color: white; }
 
-        /* --- تحسينات للإدارة --- */
-        .admin-card-title { color: var(--primary); margin-top: 0; margin-bottom: 15px; }
+        .header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
     </style>
 </head>
 <body>
 
+    <div class="bg-icons">🚕 🏎️ 📍 📱 🚕 🏎️ 📍 📱 🚕 🏎️ 📍 📱 🚕 🏎️ 📍 📱 🚕 🏎️ 📍 📱 🚕 🏎️ 📍 📱</div>
+
     <div id="welcome-page" class="page active-page">
-        <div class="welcome-card">
-            <div class="logo-icon">🚕</div>
-            <div class="welcome-title">تاكسي مسلاتة</div>
-            <div class="welcome-subtitle">مرحباً بك، يرجى اختيار نوع الدخول:</div>
+        <div class="welcome-container">
+            <div class="main-logo" id="secret-logo">🚕</div>
+            <div class="app-title">تاكسي مسلاتة</div>
+            <p style="color: var(--text-dim); margin-bottom: 30px;">أسرع وسيلة للتنقل في المدينة</p>
             
-            <button class="btn-main btn-user" onclick="enterUser()">أنا راكب (اطلب رحلة) 👤</button>
-            <button class="btn-main btn-driver" onclick="enterDriver()">أنا سائق (تسجيل دخول) 🏎️</button>
-            
-            <button class="btn-main btn-admin" onclick="enterAdmin()">⚙️ دخول الإدارة</button>
+            <button class="btn btn-gold" onclick="enterUser()">اطلب رحلة الآن 👤</button>
+            <button class="btn btn-outline" onclick="enterDriver()">دخول الكابتن 🏎️</button>
         </div>
     </div>
 
     <div id="user-page" class="page">
-        <div class="section-header">
-            <h3>اطلب رحلتك الآن</h3>
-            <button class="logout-btn" onclick="goHome()">خروج ⬅️</button>
+        <div class="header-flex">
+            <h2 style="margin:0;">احجز رحلتك</h2>
+            <div class="logout-pill" onclick="goHome()">خروج</div>
         </div>
         
-        <div class="card">
-            <div class="form-group">
-                <label>👤 اسمك الكريم</label>
-                <input type="text" id="uName" placeholder="مثلاً: محمد علي">
+        <div class="glass-card">
+            <div class="input-group">
+                <label>👤 الاسم</label>
+                <input type="text" id="uName" placeholder="محمد الشريف">
             </div>
-            <div class="form-group">
-                <label>📞 رقم هاتفك</label>
-                <input type="tel" id="uPhone" placeholder="091XXXXXXX">
+            <div class="input-group">
+                <label>📞 رقم الهاتف</label>
+                <input type="tel" id="uPhone" placeholder="09xxxxxxx">
             </div>
-            <div class="form-group">
-                <label>🗺️ نوع الرحلة</label>
+            <div class="input-group">
+                <label>🗺️ نطاق الرحلة</label>
                 <select id="uType" onchange="loadLocs()">
                     <option value="داخل مسلاتة">داخل مسلاتة 🏘️</option>
                     <option value="خارج مسلاتة">خارج مسلاتة 🛤️</option>
                 </select>
             </div>
-            <div class="form-group">
+            <div class="input-group">
                 <label>📍 الوجهة المحددة</label>
                 <select id="uLoc"></select>
             </div>
-            <div class="form-group">
-                <label>🏎️ اختر كابتن متوفر</label>
+            <div class="input-group">
+                <label>🏎️ اختيار السائق</label>
                 <select id="uDr"></select>
             </div>
-            
-            <button class="btn-main btn-user" onclick="sendTrip()">🚗 تأكيد طلب التاكسي</button>
+            <button class="btn btn-gold" onclick="sendTrip()">إرسال الطلب فوراً</button>
         </div>
     </div>
 
     <div id="driver-page" class="page">
-        <div class="section-header">
-            <h3 id="dr-hi">لوحة تحكم الكابتن</h3>
-            <button class="logout-btn" onclick="goHome()">خروج ⬅️</button>
+        <div class="header-flex">
+            <h2 id="dr-hi">طلبات الزبائن</h2>
+            <div class="logout-pill" onclick="goHome()">تسجيل خروج</div>
         </div>
-        
         <div id="trips-list">
-            <p style="text-align:center;">جاري تحميل الطلبات الجديدة...</p>
+            <p style="text-align:center; color: var(--text-dim);">جاري مراقبة الطلبات...</p>
         </div>
     </div>
 
     <div id="admin-page" class="page">
-        <div class="section-header">
-            <h3>الإدارة الكاملة</h3>
-            <button class="logout-btn" onclick="goHome()">خروج ⬅️</button>
+        <div class="header-flex">
+            <h2>إدارة النظام</h2>
+            <div class="logout-pill" onclick="goHome()">إغلاق</div>
         </div>
         
-        <div class="card">
-            <h4 class="admin-card-title">➕ إضافة سائق جديد</h4>
-            <input id="reg-name" placeholder="👤 اسم السائق الثلاثي">
-            <input id="reg-phone" placeholder="📞 رقم الهاتف">
-            <input id="reg-pass" placeholder="🔑 كلمة المرور (للدخول)">
-            <button class="btn-main btn-driver" onclick="registerDriver()">تسجيل الكابتن 🏎️</button>
+        <div class="glass-card">
+            <h3 style="color:var(--gold); margin-top:0;">👤 إضافة سائق</h3>
+            <input id="reg-name" placeholder="اسم الكابتن">
+            <input id="reg-phone" placeholder="رقم الهاتف">
+            <input id="reg-pass" placeholder="كلمة المرور">
+            <button class="btn btn-gold" style="padding:12px;" onclick="registerDriver()">حفظ الكابتن</button>
         </div>
 
-        <div class="card">
-            <h4 class="admin-card-title">📍 إضافة وجهة جديدة</h4>
-            <input id="loc-name" placeholder="🗺️ اسم المنطقة/الوجهة">
-            <input id="loc-price" placeholder="💰 سعر الرحلة (د.ل)">
-            <button class="btn-main btn-user" onclick="addLocation()">إضافة الوجهة ➕</button>
+        <div class="glass-card">
+            <h3 style="color:var(--gold); margin-top:0;">📍 إضافة وجهة</h3>
+            <input id="loc-name" placeholder="اسم المنطقة">
+            <input id="loc-price" placeholder="السعر">
+            <button class="btn btn-gold" style="padding:12px;" onclick="addLocation()">إضافة السعر</button>
         </div>
     </div>
 
     <audio id="notifSound" src="https://www.soundjay.com/buttons/beep-07a.mp3" preload="auto"></audio>
 
     <script>
-        // --- الكود البرمجي (لا تلمسه، قمنا بربطه مسبقاً) ---
         const API = 'https://txm-taxi.onrender.com/api';
         let locsData = [];
         let lastTripsCount = 0;
+        let adminClicks = 0;
+
+        // --- نظام الدخول السري للإدارة ---
+        document.getElementById('secret-logo').onclick = () => {
+            adminClicks++;
+            if(adminClicks === 3) {
+                const pass = prompt("🔒 مدخل الإدارة السري:");
+                if(pass === "msallata2026") {
+                    document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+                    document.getElementById('admin-page').classList.add('active-page');
+                }
+                adminClicks = 0;
+            }
+            setTimeout(() => { adminClicks = 0; }, 2000);
+        };
 
         function goHome() { 
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
@@ -314,118 +266,88 @@
         }
 
         async function enterDriver() {
-            const phone = prompt("👤 أدخل رقم هاتفك المسجل (الدخول للكابتن):");
-            const pass = prompt("🔑 أدخل كلمة المرور:");
+            const phone = prompt("📞 أدخل رقم هاتفك:");
+            const pass = prompt("🔑 كلمة المرور:");
             if(!phone || !pass) return;
-            
-            try {
-                const res = await fetch(`${API}/drivers`);
-                const drivers = await res.json();
-                const driver = drivers.find(d => d.phone === phone && d.password === pass);
-
-                if (driver) {
-                    document.getElementById('welcome-page').classList.remove('active-page');
-                    document.getElementById('driver-page').classList.add('active-page');
-                    document.getElementById('dr-hi').innerText = `أهلاً بك كابتن ${driver.driver_name}`;
-                    refresh();
-                } else { alert("❌ بيانات غير صحيحة، تأكد من الرقم وكلمة السر!"); }
-            } catch(e) { alert("❌ فشل الاتصال بالسيرفر"); }
-        }
-
-        function enterAdmin() {
-            const masterPass = "msallata2026"; // كلمة السر
-            const entry = prompt("🔒 أدخل كلمة سر الإدارة الشاملة:");
-            if (entry === masterPass) {
+            const res = await fetch(`${API}/drivers`);
+            const drivers = await res.json();
+            const dr = drivers.find(d => d.phone === phone && d.password === pass);
+            if(dr) {
                 document.getElementById('welcome-page').classList.remove('active-page');
-                document.getElementById('admin-page').classList.add('active-page');
+                document.getElementById('driver-page').classList.add('active-page');
+                document.getElementById('dr-hi').innerText = `طلبات الكابتن ${dr.driver_name}`;
                 refresh();
-            } else { alert("⚠️ غير مصرح لك بدخول الإدارة!"); }
+            } else { alert("بيانات غير صحيحة"); }
         }
 
         async function refresh() {
             try {
-                const resL = await fetch(`${API}/locations`);
+                const [resL, resD, resT] = await Promise.all([
+                    fetch(`${API}/locations`), fetch(`${API}/drivers`), fetch(`${API}/trips`)
+                ]);
                 locsData = await resL.json();
                 loadLocs();
-
-                const resD = await fetch(`${API}/drivers`);
                 const drs = await resD.json();
-                document.getElementById('uDr').innerHTML = drs.map(d => `<option value="${d.driver_name}">${d.driver_name} (${d.car_type || 'تاكسي'})</option>`).join('');
-
-                const resT = await fetch(`${API}/trips`);
+                document.getElementById('uDr').innerHTML = drs.map(d => `<option value="${d.driver_name}">${d.driver_name}</option>`).join('');
                 const trips = await resT.json();
                 displayTrips(trips);
-
-                if (trips.length > lastTripsCount && lastTripsCount !== 0) {
-                    document.getElementById('notifSound').play().catch(()=>{});
-                }
+                if (trips.length > lastTripsCount && lastTripsCount !== 0) document.getElementById('notifSound').play();
                 lastTripsCount = trips.length;
-            } catch(e) {}
+            } catch(e){}
         }
 
         function loadLocs() {
             const type = document.getElementById('uType').value;
             const filtered = locsData.filter(l => l.location_type === type);
-            document.getElementById('uLoc').innerHTML = filtered.map(l => `<option value="${l.location_name}">${l.location_name} (${l.price} د.ل)</option>`).join('') || '<option>لا توجد وجهات</option>';
+            document.getElementById('uLoc').innerHTML = filtered.map(l => `<option value="${l.location_name}">${l.location_name} (${l.price} د.ل)</option>`).join('');
         }
 
         async function sendTrip() {
             const name = document.getElementById('uName').value;
             const phone = document.getElementById('uPhone').value;
-            const loc = document.getElementById('uLoc').value;
-            const driver = document.getElementById('uDr').value;
-            if(!name || !phone) return alert("⚠️ يرجى إدخال اسمك ورقم هاتفك");
+            if(!name || !phone) return alert("البيانات ناقصة");
             await fetch(`${API}/trips`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ name, phone, loc, driver })
+                body: JSON.stringify({ name, phone, loc: document.getElementById('uLoc').value, driver: document.getElementById('uDr').value })
             });
-            alert("✅ تم إرسال طلبك! الكابتن في الطريق إليك.");
-            document.getElementById('uName').value = ''; document.getElementById('uPhone').value = '';
+            alert("✅ تم الطلب!");
         }
 
         function displayTrips(trips) {
             const list = document.getElementById('trips-list');
             if(!list) return;
             list.innerHTML = trips.map(t => `
-                <div class="card trip-card">
-                    <p class="trip-p">👤 <b>اسم الراكب:</b> ${t.passenger_name}</p>
-                    <p class="trip-p">📞 <b>الهاتف:</b> <a href="tel:${t.phone}" style="color:white; text-decoration:none;">${t.phone} 📞</a></p>
-                    <p class="trip-p">📍 <b>الوجهة:</b> ${t.pickup_point}</p>
-                    <p class="trip-p" style="font-size:12px; color:rgba(255,255,255,0.5);">⏰ ${new Date(t.created_at).toLocaleTimeString('ar-LY')}</p>
+                <div class="trip-item">
+                    <p><b>👤 الراكب:</b> ${t.passenger_name}</p>
+                    <p><b>📞 هاتف:</b> <a href="tel:${t.phone}" style="color:var(--gold);">${t.phone}</a></p>
+                    <p><b>📍 الوجهة:</b> ${t.pickup_point}</p>
                 </div>
-            `).join('') || '<p style="text-align:center;">لا توجد طلبات جديدة حالياً..😴</p>';
+            `).join('') || '<p style="text-align:center;">لا يوجد طلبات</p>';
         }
 
         async function registerDriver() {
             const name = document.getElementById('reg-name').value;
             const phone = document.getElementById('reg-phone').value;
             const pass = document.getElementById('reg-pass').value;
-            if(!name || !phone || !pass) return alert("⚠️ املأ بيانات السائق الأساسية");
             await fetch(`${API}/drivers`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ name, phone, pass, car: "تويوتا الكامري", plate: "000" })
+                body: JSON.stringify({ name, phone, pass, car: "تويوتا", plate: "000" })
             });
-            alert("✅ تم تسجيل الكابتن بنجاح!");
-            document.getElementById('reg-name').value=''; document.getElementById('reg-phone').value=''; document.getElementById('reg-pass').value='';
+            alert("تم التسجيل");
         }
 
         async function addLocation() {
-            const name = document.getElementById('loc-name').value;
-            const type = document.getElementById('uType').value;
-            const price = document.getElementById('loc-price').value;
-            if(!name || !price) return alert("⚠️ املأ بيانات الوجهة والسعر");
             await fetch(`${API}/locations`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ name, type, price })
+                body: JSON.stringify({ name: document.getElementById('loc-name').value, type: document.getElementById('uType').value, price: document.getElementById('loc-price').value })
             });
-            alert("✅ تمت إضافة الوجهة الجديدة");
-            document.getElementById('loc-name').value=''; document.getElementById('loc-price').value='';
+            alert("تمت الإضافة");
         }
 
-        setInterval(refresh, 10000); // تحديث تلقائي كل 10 ثواني
+        setInterval(refresh, 10000);
     </script>
 </body>
 </html>
