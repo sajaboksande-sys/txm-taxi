@@ -3,13 +3,9 @@ import mysql from 'mysql2/promise';
 import cors from 'cors';
 
 const app = express();
-
-// إعدادات الـ CORS للسماح لـ GitHub Pages بالاتصال
 app.use(cors());
 app.use(express.json());
 
-// الاتصال باستخدام DATABASE_URL (الرابط الكامل من Aiven)
-// هذا الرابط يحل مشكلة الـ offset والتشفير تلقائياً
 const databaseUrl = process.env.DATABASE_URL;
 
 if (!databaseUrl) {
@@ -17,97 +13,105 @@ if (!databaseUrl) {
 }
 
 const pool = mysql.createPool(databaseUrl);
-// دالة لإنشاء الجدول تلقائياً إذا لم يكن موجوداً
-async function createTable() {
-    const sql = `
-    CREATE TABLE IF NOT EXISTS trips (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        passenger_name VARCHAR(100),
-        phone VARCHAR(20),
-        pickup_point VARCHAR(100),
-        driver_name VARCHAR(100),
-        status ENUM('pending', 'accepted', 'completed') DEFAULT 'pending',
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );`;
-    try {
-        await pool.query(sql);
-        console.log("✅ جدول الرحلات (trips) جاهز للعمل!");
-    } catch (err) {
-        console.error("❌ فشل إنشاء الجدول:", err.message);
-    }
-}
 
-// تنفيذ الإنشاء عند تشغيل السيرفر
-createTable();
-// دالة تنفيذ الاستعلامات مع معالجة الأخطاء
-async function executeQuery(sql, params = []) {
-    let connection;
+// --- إنشاء الجداول تلقائياً لضمان عدم ضياع البيانات ---
+async function initDatabase() {
     try {
-        connection = await pool.getConnection();
-        const [results] = await connection.execute(sql, params);
-        return results;
+        // 1. جدول الوجهات
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS locations (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                location_name VARCHAR(100),
+                location_type VARCHAR(50),
+                price DECIMAL(10,2)
+            )`);
+        
+        // 2. جدول السائقين
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS drivers (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                driver_name VARCHAR(100),
+                phone VARCHAR(20) UNIQUE,
+                car_type VARCHAR(50),
+                plate_number VARCHAR(20),
+                password VARCHAR(50)
+            )`);
+
+        // 3. جدول الرحلات
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS trips (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                passenger_name VARCHAR(100),
+                phone VARCHAR(20),
+                pickup_point VARCHAR(100),
+                driver_name VARCHAR(100),
+                status ENUM('pending', 'accepted', 'completed') DEFAULT 'pending',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )`);
+        
+        console.log("✅ جميع جداول قاعدة البيانات جاهزة!");
     } catch (err) {
-        console.error("🔴 خطأ في قاعدة البيانات:", err.message);
-        throw err;
-    } finally {
-        if (connection) connection.release(); // إغلاق الاتصال بعد التنفيذ
+        console.error("❌ فشل تهيئة قاعدة البيانات:", err.message);
     }
 }
+initDatabase();
 
 // --- المسارات (Routes) ---
 
-// 1. اختبار السيرفر
-app.get('/', (req, res) => {
-    res.send('🚀 السيرفر متصل وقاعدة البيانات جاهزة للعمل!');
-});
+app.get('/', (req, res) => res.send('🚀 السيرفر يعمل وقاعدة البيانات متصلة!'));
 
-// 2. جلب الوجهات
+// 1. جلب الوجهات
 app.get('/api/locations', async (req, res) => {
     try {
-        const results = await executeQuery("SELECT * FROM locations");
-        res.json(results || []);
-    } catch (err) {
-        res.status(500).json({ error: "فشل جلب الوجهات: " + err.message });
-    }
+        const [rows] = await pool.query("SELECT * FROM locations");
+        res.json(rows);
+    } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// 3. إضافة وجهة جديدة
+// 2. إضافة وجهة جديدة
 app.post('/api/locations', async (req, res) => {
     try {
         const { name, type, price } = req.body;
-        const sql = "INSERT INTO locations (location_name, location_type, price) VALUES (?, ?, ?)";
-        await executeQuery(sql, [name, type, price]);
+        await pool.query("INSERT INTO locations (location_name, location_type, price) VALUES (?, ?, ?)", [name, type, price]);
         res.json({ success: true });
-    } catch (err) {
-        res.status(500).json({ error: "فشل إضافة الوجهة: " + err.message });
-    }
+    } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// 4. إضافة سائق جديد
+// 3. جلب السائقين
+app.get('/api/drivers', async (req, res) => {
+    try {
+        const [rows] = await pool.query("SELECT * FROM drivers");
+        res.json(rows);
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// 4. تسجيل سائق جديد
 app.post('/api/drivers', async (req, res) => {
     try {
         const { name, phone, car, plate, pass } = req.body;
-        const sql = "INSERT INTO drivers (driver_name, phone, car_type, plate_number, password) VALUES (?, ?, ?, ?, ?)";
-        await executeQuery(sql, [name, phone, car, plate, pass]);
+        await pool.query("INSERT INTO drivers (driver_name, phone, car_type, plate_number, password) VALUES (?, ?, ?, ?, ?)", 
+        [name, phone, car, plate, pass]);
         res.json({ success: true });
-    } catch (err) {
-        res.status(500).json({ error: "فشل تسجيل السائق: " + err.message });
-    }
+    } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// 5. جلب السائقين (للتحقق من الدخول واختيارهم في الطلب)
-app.get('/api/drivers', async (req, res) => {
+// 5. إرسال طلب رحلة (مهم جداً للراكب)
+app.post('/api/trips', async (req, res) => {
     try {
-        // نستخدم * لجلب الهاتف وكلمة المرور من أجل دالة loginDr
-        const results = await executeQuery("SELECT * FROM drivers");
-        res.json(results || []);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
+        const { name, phone, loc, driver } = req.body;
+        await pool.query("INSERT INTO trips (passenger_name, phone, pickup_point, driver_name) VALUES (?, ?, ?, ?)", 
+        [name, phone, loc, driver]);
+        res.json({ success: true });
+    } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// تشغيل السيرفر على البورت المناسب لـ Render
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, '0.0.0.0', () => {
-    console.log(`✅ السيرفر يعمل الآن على البورت ${PORT}`);
+// 6. جلب الرحلات (مهم جداً للسائق)
+app.get('/api/trips', async (req, res) => {
+    try {
+        const [rows] = await pool.query("SELECT * FROM trips ORDER BY created_at DESC");
+        res.json(rows);
+    } catch (err) { res.status(500).json({ error: err.message }); }
 });
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, '0.0.0.0', () => console.log(`✅ Server on port ${PORT}`));
